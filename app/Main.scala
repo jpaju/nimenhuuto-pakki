@@ -25,11 +25,24 @@ def namesIn(doc: Document, zoneId: String): List[String] =
 
   playerElements.map(_.text.trim)
 
-@main
-def main(path: String): Unit =
-  val browser = JsoupBrowser()
-  val doc     = browser.parseFile(path)
+def readSessionId(): String =
+  val sessionId = sys.env.getOrElse("NIMENHUUTO_SESSION_ID", "")
+  if sessionId.isEmpty then
+    System.err.println("NIMENHUUTO_SESSION_ID env var not set")
+    System.exit(1)
 
+  sessionId
+
+def fetchPage(url: String, sessionId: String): Document =
+  val browser = JsoupBrowser.typed()
+  browser.setCookie("ignored", "_session_id", "e45c6db30f3c8112500bd691eb3644e3")
+  browser.get(url)
+
+@main
+def main(url: String): Unit =
+  val sessionId = readSessionId()
+
+  val doc                       = fetchPage(url, sessionId)
   val Players(in, out, unknown) = getPlayers(doc)
 
   println(s"In (${in.size}): ${in.mkString(", ")}")
