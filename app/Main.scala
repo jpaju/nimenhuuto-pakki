@@ -63,12 +63,24 @@ def main(command: String, args: String*): Unit =
 
     case "show" =>
       if args.isEmpty then exitWithError("Usage: show <event-url>")
-
       val doc                       = fetchPage(args.head, sessionId)
       val Players(in, out, unknown) = getPlayers(doc)
       println(s"In (${in.size}): ${in.mkString(", ")}")
       println(s"Out (${out.size}): ${out.mkString(", ")}")
       println(s"Unknown (${unknown.size}): ${unknown.mkString(", ")}")
+
+    case "count-attendance" =>
+      val archiveUrl = s"$baseUrl/events/archive"
+      val archiveDoc = fetchPage(archiveUrl, sessionId)
+      val events     = getEventUrls(archiveDoc)
+
+      events.foreach: event =>
+        val doc     = fetchPage(event.url, sessionId)
+        val players = getPlayers(doc)
+        println(s"${event.id}:")
+        println(s"  In (${players.in.size}): ${players.in.mkString(", ")}")
+        println(s"  Out (${players.out.size}): ${players.out.mkString(", ")}")
+        println(s"  Unknown (${players.unknown.size}): ${players.unknown.mkString(", ")}")
 
     case _ =>
       exitWithError(
@@ -76,5 +88,6 @@ def main(command: String, args: String*): Unit =
            |
            |Commands:
            |  - list-events
-           |  - show <url>""".stripMargin
+           |  - show <url>
+           |  - count-attendance""".stripMargin
       )
