@@ -6,14 +6,26 @@ Currently only scrapes player attendance/registration data from events.
 
 ## Usage
 
-Get your `_session_id` cookie from browser dev tools after logging in to nimenhuuto.
-The session id is read from `NIMENHUUTO_SESSION_ID` environment variable (needs to be set before running the app)
+### Environment variables
+
+- `BASE_URL` - your team's nimenhuuto URL (e.g. `https://yourteam.nimenhuuto.com`)
+- `NIMENHUUTO_SESSION_ID` - your `_session_id` cookie from browser dev tools after logging in
+
+### Commands
 
 ```bash
-scala-cli run app -- "https://<yourteam>.nimenhuuto.com/events/<event-id>"
-```
+# list events from archive
+scala-cli run app -- list-events
 
-Prints players grouped by registration status (in/out/unknown).
+# show attendance for a single event
+scala-cli run app -- show-event "https://yourteam.nimenhuuto.com/events/12345"
+
+# show attendance for all archived events
+scala-cli run app -- count-attendance
+
+# show help
+scala-cli run app -- help
+```
 
 ## Development
 
@@ -23,7 +35,7 @@ All required tools are available in nix development shell, activate with `nix de
 
 ## TODO
 
-- [ ] Discover all events automatically
+- [x] Discover all events automatically
 - [ ] Calculate attendance for every player across multiple events
 - [ ] Error handling
   - When login is not successful
