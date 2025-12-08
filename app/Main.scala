@@ -7,7 +7,7 @@ import net.ruippeixotog.scalascraper.dsl.DSL.Extract.*
 import net.ruippeixotog.scalascraper.model.Document
 
 case class Players(in: List[String], out: List[String], unknown: List[String])
-case class Event(id: String, url: String)
+case class Event(id: String, url: String, title: String, date: String)
 
 def getPlayers(doc: Document): Players =
   val inPlayersId      = "zone_1"
@@ -26,14 +26,21 @@ def namesIn(doc: Document, zoneId: String): List[String] =
 
   playerElements.map(_.text.trim)
 
-def getEventUrls(doc: Document): List[Event] =
-  val links = (doc >> elements("a.event-title-link")).toList
-  links.flatMap: link =>
-    link
-      .attr("href")
-      .split("/events/")
-      .lastOption
-      .map(id => Event(id, link.attr("href")))
+def getEvents(doc: Document): List[Event] =
+  val containers = (doc >> elements("div.event-detailed-container")).toList
+  containers.flatMap: container =>
+    val linkOpt  = (container >?> element("a.event-title-link"))
+    val titleOpt = linkOpt.map(_.text.trim)
+    val urlOpt   = linkOpt.map(_.attr("href"))
+    val idOpt    = urlOpt.flatMap(_.split("/events/").lastOption)
+    val dateOpt  = (container >?> element("h4")).map(_.text.trim)
+
+    for
+      id    <- idOpt
+      url   <- urlOpt
+      title <- titleOpt
+      date  <- dateOpt
+    yield Event(id, url, title, date)
 
 def fetchPage(url: String, sessionId: String): Document =
   val browser = JsoupBrowser.typed()
@@ -58,8 +65,8 @@ def main(command: String, args: String*): Unit =
     case "list-events" =>
       val archiveUrl = s"$baseUrl/events/archive"
       val doc        = fetchPage(archiveUrl, sessionId)
-      val events     = getEventUrls(doc)
-      events.foreach(e => println(e.url))
+      val events     = getEvents(doc)
+      events.foreach(e => println(s"${e.date} - ${e.title} (${e.url})"))
 
     case "show" =>
       if args.isEmpty then exitWithError("Usage: show <event-url>")
@@ -72,12 +79,12 @@ def main(command: String, args: String*): Unit =
     case "count-attendance" =>
       val archiveUrl = s"$baseUrl/events/archive"
       val archiveDoc = fetchPage(archiveUrl, sessionId)
-      val events     = getEventUrls(archiveDoc)
+      val events     = getEvents(archiveDoc)
 
       events.foreach: event =>
         val doc     = fetchPage(event.url, sessionId)
         val players = getPlayers(doc)
-        println(s"${event.id}:")
+        println(s"${event.title} - ${event.date}:")
         println(s"  In (${players.in.size}): ${players.in.mkString(", ")}")
         println(s"  Out (${players.out.size}): ${players.out.mkString(", ")}")
         println(s"  Unknown (${players.unknown.size}): ${players.unknown.mkString(", ")}")
