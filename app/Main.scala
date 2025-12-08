@@ -7,6 +7,7 @@ import net.ruippeixotog.scalascraper.dsl.DSL.Extract.*
 import net.ruippeixotog.scalascraper.model.Document
 
 case class Players(in: List[String], out: List[String], unknown: List[String])
+case class Event(id: String, url: String)
 
 def getPlayers(doc: Document): Players =
   val inPlayersId      = "zone_1"
@@ -25,26 +26,55 @@ def namesIn(doc: Document, zoneId: String): List[String] =
 
   playerElements.map(_.text.trim)
 
-def readSessionId(): String =
-  val sessionId = sys.env.getOrElse("NIMENHUUTO_SESSION_ID", "")
-  if sessionId.isEmpty then
-    System.err.println("NIMENHUUTO_SESSION_ID env var not set")
-    System.exit(1)
-
-  sessionId
+def getEventUrls(doc: Document): List[Event] =
+  val links = (doc >> elements("a.event-title-link")).toList
+  links.flatMap: link =>
+    link
+      .attr("href")
+      .split("/events/")
+      .lastOption
+      .map(id => Event(id, link.attr("href")))
 
 def fetchPage(url: String, sessionId: String): Document =
   val browser = JsoupBrowser.typed()
   browser.setCookie("ignored", "_session_id", "e45c6db30f3c8112500bd691eb3644e3")
   browser.get(url)
 
+def requireEnvVar(name: String): String =
+  sys.env.get(name) match
+    case Some(value) => value
+    case None        => exitWithError(s"$name env var not set")
+
+def exitWithError(error: String): Nothing =
+  System.err.println(error)
+  sys.exit(1)
+
 @main
-def main(url: String): Unit =
-  val sessionId = readSessionId()
+def main(command: String, args: String*): Unit =
+  val baseUrl   = requireEnvVar("BASE_URL")
+  val sessionId = requireEnvVar("NIMENHUUTO_SESSION_ID")
 
-  val doc                       = fetchPage(url, sessionId)
-  val Players(in, out, unknown) = getPlayers(doc)
+  command match
+    case "list-events" =>
+      val archiveUrl = s"$baseUrl/events/archive"
+      val doc        = fetchPage(archiveUrl, sessionId)
+      val events     = getEventUrls(doc)
+      events.foreach(e => println(e.url))
 
-  println(s"In (${in.size}): ${in.mkString(", ")}")
-  println(s"Out (${out.size}): ${out.mkString(", ")}")
-  println(s"Unknown (${unknown.size}): ${unknown.mkString(", ")}")
+    case "show" =>
+      if args.isEmpty then exitWithError("Usage: show <event-url>")
+
+      val doc                       = fetchPage(args.head, sessionId)
+      val Players(in, out, unknown) = getPlayers(doc)
+      println(s"In (${in.size}): ${in.mkString(", ")}")
+      println(s"Out (${out.size}): ${out.mkString(", ")}")
+      println(s"Unknown (${unknown.size}): ${unknown.mkString(", ")}")
+
+    case _ =>
+      exitWithError(
+        s"""Unknown command: '$command'
+           |
+           |Commands:
+           |  - list-events
+           |  - show <url>""".stripMargin
+      )
