@@ -23,3 +23,18 @@ def countAttendance(baseUrl: String, sessionId: String): Unit =
     println(s"  In (${players.in.size}): ${players.in.mkString(", ")}")
     println(s"  Out (${players.out.size}): ${players.out.mkString(", ")}")
     println(s"  Unknown (${players.unknown.size}): ${players.unknown.mkString(", ")}")
+
+def eventHistory(baseUrl: String, sessionId: String): Unit =
+  val archiveUrl = s"$baseUrl/events/archive"
+  val archiveDoc = fetchPage(archiveUrl, sessionId)
+  val events     = getEvents(archiveDoc)
+
+  val history = EventHistory(
+    events.map: event =>
+      val doc     = fetchPage(event.url, sessionId)
+      val players = getPlayers(doc)
+      event -> players
+    .toMap
+  )
+
+  println(history)

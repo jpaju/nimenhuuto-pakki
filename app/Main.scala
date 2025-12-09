@@ -14,6 +14,9 @@ def main(command: String, args: String*): Unit =
     case "count-attendance" =>
       countAttendance(baseUrl, sessionId)
 
+    case "event-history" =>
+      eventHistory(baseUrl, sessionId)
+
     case "help" =>
       printHelp()
 
@@ -26,7 +29,8 @@ def printHelp() =
     s"""Commands:
        |  - list-events
        |  - show-event <url>
-       |  - count-attendance""".stripMargin
+       |  - count-attendance
+       |  - event-history""".stripMargin
   )
 
 def requireEnvVar(name: String): String =
