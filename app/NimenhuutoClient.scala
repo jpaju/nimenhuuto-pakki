@@ -3,17 +3,17 @@ import net.ruippeixotog.scalascraper.model.Document
 
 // TODO Error handling (missing events, network/authentication/parsing errors) ?
 trait NimenhuutoClient:
-  def getPlayers(eventId: String): Players
-  def getEvents(): Iterator[Event]
-  def getEventAttendance(): Iterator[EventAttendance]
+  def fetchPlayers(eventId: String): Players
+  def fetchEvents(): Iterator[Event]
+  def fetchEventAttendances(): Iterator[EventAttendance]
 
 class LiveNimenhuutoClient(baseUrl: String, sessionId: String) extends NimenhuutoClient:
-  def getPlayers(eventId: String): Players =
+  def fetchPlayers(eventId: String): Players =
     val url      = s"$baseUrl/events/$eventId"
     val eventDoc = fetchPage(url)
     parsePlayers(eventDoc)
 
-  def getEvents(): Iterator[Event] =
+  def fetchEvents(): Iterator[Event] =
     Iterator
       .unfold(1) { page =>
         val doc    = fetchPage(s"$baseUrl/events/archive?page=$page")
@@ -23,9 +23,9 @@ class LiveNimenhuutoClient(baseUrl: String, sessionId: String) extends Nimenhuut
       }
       .flatten
 
-  def getEventAttendance(): Iterator[EventAttendance] =
-    getEvents().map { event =>
-      val players = getPlayers(event.id)
+  def fetchEventAttendances(): Iterator[EventAttendance] =
+    fetchEvents().map { event =>
+      val players = fetchPlayers(event.id)
       EventAttendance(event, players)
     }
 

@@ -1,19 +1,19 @@
 class Commands(client: NimenhuutoClient):
   def showEvent(eventId: String): Unit =
-    val Players(in, out, unknown) = client.getPlayers(eventId)
+    val Players(in, out, unknown) = client.fetchPlayers(eventId)
     println(s"In (${in.size}): ${in.mkString(", ")}")
     println(s"Out (${out.size}): ${out.mkString(", ")}")
     println(s"Unknown (${unknown.size}): ${unknown.mkString(", ")}")
 
   def listEvents(count: Int): Unit =
     client
-      .getEvents()
+      .fetchEvents()
       .take(count)
       .foreach(event => println(s"${event.date} - ${event.title} (${event.url})"))
 
   def eventHistory(count: Int): Unit =
     client
-      .getEventAttendance()
+      .fetchEventAttendances()
       .take(count)
       .foreach { attendance =>
         val event   = attendance.event
@@ -27,7 +27,7 @@ class Commands(client: NimenhuutoClient):
 
   def countAttendance(count: Int): Unit =
     val counts = client // TODO Refactor this monster
-      .getEventAttendance()
+      .fetchEventAttendances()
       .take(count)
       .flatMap(_.players.in)
       .toList
