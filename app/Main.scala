@@ -2,20 +2,22 @@
 def main(command: String, args: String*): Unit =
   val baseUrl   = requireEnvVar("BASE_URL")
   val sessionId = requireEnvVar("NIMENHUUTO_SESSION_ID")
+  val client    = LiveNimenhuutoClient(baseUrl, sessionId)
+  val commands  = Commands(client)
 
   command match
     case "list-events" =>
-      listEvents(baseUrl, sessionId)
+      commands.listEvents()
 
     case "show-event" =>
-      if args.isEmpty then exitWithError("Usage: show <event-url>")
-      else showEvent(args.head, sessionId)
+      if args.isEmpty then exitWithError("Usage: show-event <event-id>")
+      else commands.showEvent(args.head)
 
     case "count-attendance" =>
-      countAttendance(baseUrl, sessionId)
+      commands.countAttendance()
 
     case "event-history" =>
-      eventHistory(baseUrl, sessionId)
+      commands.eventHistory()
 
     case "help" =>
       printHelp()
