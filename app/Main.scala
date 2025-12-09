@@ -2,22 +2,28 @@
 def main(command: String, args: String*): Unit =
   val baseUrl   = requireEnvVar("BASE_URL")
   val sessionId = requireEnvVar("NIMENHUUTO_SESSION_ID")
-  val client    = LiveNimenhuutoClient(baseUrl, sessionId)
-  val commands  = Commands(client)
+
+  val client   = LiveNimenhuutoClient(baseUrl, sessionId)
+  val commands = Commands(client)
+
+  val defaultCount = 10
 
   command match
-    case "list-events" =>
-      commands.listEvents()
-
     case "show-event" =>
       if args.isEmpty then exitWithError("Usage: show-event <event-id>")
       else commands.showEvent(args.head)
 
+    case "list-events" =>
+      val count = args.headOption.map(_.toInt).getOrElse(defaultCount)
+      commands.listEvents(count)
+
     case "count-attendance" =>
-      commands.countAttendance()
+      val count = args.headOption.map(_.toInt).getOrElse(defaultCount)
+      commands.countAttendance(count)
 
     case "event-history" =>
-      commands.eventHistory()
+      val count = args.headOption.map(_.toInt).getOrElse(defaultCount)
+      commands.eventHistory(count)
 
     case "help" =>
       printHelp()
@@ -29,10 +35,10 @@ def main(command: String, args: String*): Unit =
 def printHelp() =
   println(
     s"""Commands:
-       |  - list-events
        |  - show-event <url>
-       |  - count-attendance
-       |  - event-history""".stripMargin
+       |  - list-events [count]
+       |  - count-attendance [count]
+       |  - event-history [count]""".stripMargin
   )
 
 def requireEnvVar(name: String): String =

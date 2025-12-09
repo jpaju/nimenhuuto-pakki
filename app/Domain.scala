@@ -11,4 +11,4 @@ case class Event(
     date: String
 )
 
-case class EventHistory(events: Map[Event, Players])
+case class EventAttendance(event: Event, players: Players)
