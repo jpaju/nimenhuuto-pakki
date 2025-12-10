@@ -24,7 +24,7 @@ def toLocalDateTime(yearStr: String, monthStr: String, dayStr: String, hourStr: 
     minute <- minuteStr.toIntOption
   yield LocalDateTime.of(year, month, day, hour, minute)
 
-def parsePlayers(eventDoc: Document): Players =
+def parseAttendanceResponses(eventDoc: Document): AttendanceResponses =
   val inPlayersId      = "zone_1"
   val outPlayersId     = "zone_2"
   val unknownPlayersId = "zone_3"
@@ -33,12 +33,12 @@ def parsePlayers(eventDoc: Document): Players =
   val outPlayers     = namesIn(eventDoc, outPlayersId)
   val unknownPlayers = namesIn(eventDoc, unknownPlayersId)
 
-  Players(inPlayers, outPlayers, unknownPlayers)
+  AttendanceResponses(inPlayers, outPlayers, unknownPlayers)
 
-def namesIn(doc: Document, zoneId: String): List[String] =
+def namesIn(doc: Document, zoneId: String): List[PlayerName] =
   val query          = s"#$zoneId span.player_label"
   val playerElements = (doc >> elements(query)).toList
-  playerElements.map(_.text.trim)
+  playerElements.map(_.text.trim).map(PlayerName(_))
 
 def parseEvents(archiveDoc: Document): List[Event] =
   val containers = (archiveDoc >> elements("div.event-detailed-container")).toList

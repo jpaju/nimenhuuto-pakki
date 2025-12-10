@@ -1,9 +1,3 @@
-case class Players(
-    in: List[String],
-    out: List[String],
-    unknown: List[String]
-)
-
 case class Event(
     id: String,
     url: String,
@@ -11,16 +5,25 @@ case class Event(
     date: String
 )
 
-case class EventAttendance(
-    event: Event,
-    players: Players
+opaque type PlayerName = String
+def PlayerName(value: String): PlayerName = value
+
+case class AttendanceResponses(
+    in: List[PlayerName],
+    out: List[PlayerName],
+    unknown: List[PlayerName]
 )
 
-case class PlayerAttendances(player: String, attendances: Int)
+case class EventAttendance(
+    event: Event,
+    responses: AttendanceResponses
+)
+
+case class PlayerStats(name: PlayerName, timesAttended: Int)
 
 case class AttendanceStats(
     totalAttendances: Int,
     mostAttended: (Event, Int),
     averageAttendance: Double,
-    playerAttendances: List[PlayerAttendances]
+    playerStats: List[PlayerStats]
 )

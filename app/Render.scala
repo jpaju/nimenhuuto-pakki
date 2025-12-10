@@ -1,8 +1,8 @@
 object Render:
-  def players(players: Players): Unit =
-    println(s"In (${players.in.size}): ${players.in.mkString(", ")}")
-    println(s"Out (${players.out.size}): ${players.out.mkString(", ")}")
-    println(s"Unknown (${players.unknown.size}): ${players.unknown.mkString(", ")}")
+  def attendanceResponses(responses: AttendanceResponses): Unit =
+    println(s"In (${responses.in.size}): ${responses.in.mkString(", ")}")
+    println(s"Out (${responses.out.size}): ${responses.out.mkString(", ")}")
+    println(s"Unknown (${responses.unknown.size}): ${responses.unknown.mkString(", ")}")
 
   def event(e: Event): Unit =
     println(s"${e.date} - ${e.title} (${e.url})")
@@ -11,13 +11,13 @@ object Render:
     events.foreach(event)
 
   def eventAttendance(attendance: EventAttendance): Unit =
-    val e = attendance.event
-    val p = attendance.players
+    val event = attendance.event
+    val resp  = attendance.responses
 
-    println(s"${e.title} - ${e.date}:")
-    println(s"  In (${p.in.size}): ${p.in.mkString(", ")}")
-    println(s"  Out (${p.out.size}): ${p.out.mkString(", ")}")
-    println(s"  Unknown (${p.unknown.size}): ${p.unknown.mkString(", ")}")
+    println(s"${event.title} - ${event.date}:")
+    println(s"  In (${resp.in.size}): ${resp.in.mkString(", ")}")
+    println(s"  Out (${resp.out.size}): ${resp.out.mkString(", ")}")
+    println(s"  Unknown (${resp.unknown.size}): ${resp.unknown.mkString(", ")}")
 
   def eventAttendances(attendances: List[EventAttendance]): Unit =
     attendances.foreach(eventAttendance)
@@ -29,4 +29,4 @@ object Render:
     println(s"Max attendance: ${maxEvent.date} ($maxCount players)")
     println(f"Average attendance: ${stats.averageAttendance}%.1f")
     println()
-    stats.playerAttendances.foreach(a => println(s"${a.player}: ${a.attendances}"))
+    stats.playerStats.foreach(a => println(s"${a.name}: ${a.timesAttended}"))

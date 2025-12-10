@@ -1,7 +1,7 @@
 class Commands(client: NimenhuutoClient):
   def showEvent(eventId: String): Unit =
-    val players = client.fetchPlayers(eventId)
-    Render.players(players)
+    val responses = client.fetchAttendanceResponses(eventId)
+    Render.attendanceResponses(responses)
 
   def listEvents(count: Int): Unit =
     val events = client
