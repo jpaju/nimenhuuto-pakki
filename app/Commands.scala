@@ -1,29 +1,23 @@
 class Commands(client: NimenhuutoClient):
   def showEvent(eventId: String): Unit =
-    val Players(in, out, unknown) = client.fetchPlayers(eventId)
-    println(s"In (${in.size}): ${in.mkString(", ")}")
-    println(s"Out (${out.size}): ${out.mkString(", ")}")
-    println(s"Unknown (${unknown.size}): ${unknown.mkString(", ")}")
+    val players = client.fetchPlayers(eventId)
+    Render.players(players)
 
   def listEvents(count: Int): Unit =
-    client
+    val events = client
       .fetchEvents()
       .take(count)
-      .foreach(event => println(s"${event.date} - ${event.title} (${event.url})"))
+      .toList
+
+    Render.events(events)
 
   def eventHistory(count: Int): Unit =
-    client
+    val attendances = client
       .fetchEventAttendances()
       .take(count)
-      .foreach { attendance =>
-        val event   = attendance.event
-        val players = attendance.players
+      .toList
 
-        println(s"${event.title} - ${event.date}:")
-        println(s"  In (${players.in.size}): ${players.in.mkString(", ")}")
-        println(s"  Out (${players.out.size}): ${players.out.mkString(", ")}")
-        println(s"  Unknown (${players.unknown.size}): ${players.unknown.mkString(", ")}")
-      }
+    Render.eventAttendances(attendances)
 
   def countAttendance(count: Int): Unit =
     val attendances = client
@@ -32,11 +26,5 @@ class Commands(client: NimenhuutoClient):
       .toList
 
     calculateAttendanceStats(attendances) match
+      case Some(stats) => Render.attendanceStats(stats)
       case None        => println("No events found")
-      case Some(stats) =>
-        val (maxEvent, maxCount) = stats.maxAttendance
-        println(s"Total attendances: ${stats.totalAttendances}")
-        println(s"Max attendance: ${maxEvent.date} ($maxCount players)")
-        println(f"Average attendance: ${stats.avgAttendance}%.1f")
-        println()
-        stats.playerCounts.foreach((name, count) => println(s"$name: $count"))
