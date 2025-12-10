@@ -1,5 +1,6 @@
 import net.ruippeixotog.scalascraper.browser.JsoupBrowser
 import net.ruippeixotog.scalascraper.model.Document
+import java.time.LocalDateTime
 
 // TODO Error handling (missing events, network/authentication/parsing errors) ?
 trait NimenhuutoClient:
@@ -17,7 +18,7 @@ class LiveNimenhuutoClient(baseUrl: String, sessionId: String) extends Nimenhuut
     Iterator
       .unfold(1) { page =>
         val archivePage = fetchPage(s"$baseUrl/events/archive?page=$page")
-        val events      = HtmlParser.archiveEvents(archivePage)
+        val events      = HtmlParser.archiveEvents(archivePage, currentYear())
         if events.isEmpty then None
         else Some((events, page + 1))
       }
@@ -33,3 +34,6 @@ class LiveNimenhuutoClient(baseUrl: String, sessionId: String) extends Nimenhuut
     val browser = JsoupBrowser.typed() // TODO Share browser instance?
     browser.setCookie("ignored", "_session_id", sessionId)
     browser.get(url)
+
+  private def currentYear(): Int =
+    LocalDateTime.now().getYear

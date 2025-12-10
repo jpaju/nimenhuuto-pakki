@@ -1,8 +1,10 @@
+import java.time.LocalDateTime
+
 case class Event(
     id: String,
     url: String,
     title: String,
-    date: String
+    date: LocalDateTime
 )
 
 opaque type PlayerName = String

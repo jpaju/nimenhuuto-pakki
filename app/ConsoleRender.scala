@@ -1,3 +1,6 @@
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+
 object ConsoleRender:
   def attendanceResponses(responses: AttendanceResponses): Unit =
     println(s"In (${responses.in.size}): ${responses.in.mkString(", ")}")
@@ -5,7 +8,7 @@ object ConsoleRender:
     println(s"Unknown (${responses.unknown.size}): ${responses.unknown.mkString(", ")}")
 
   def event(e: Event): Unit =
-    println(s"${e.date} - ${e.title} (${e.url})")
+    println(s"${formatDate(e.date)} - ${e.title} (${e.url})")
 
   def events(events: List[Event]): Unit =
     events.foreach(event)
@@ -14,7 +17,7 @@ object ConsoleRender:
     val event = attendance.event
     val resp  = attendance.responses
 
-    println(s"${event.title} - ${event.date}:")
+    println(s"${event.title} - ${formatDate(event.date)}:")
     println(s"  In (${resp.in.size}): ${resp.in.mkString(", ")}")
     println(s"  Out (${resp.out.size}): ${resp.out.mkString(", ")}")
     println(s"  Unknown (${resp.unknown.size}): ${resp.unknown.mkString(", ")}")
@@ -26,7 +29,12 @@ object ConsoleRender:
     val (maxEvent, maxCount) = stats.mostAttended
 
     println(s"Total attendances: ${stats.totalAttendances}")
-    println(s"Max attendance: ${maxEvent.date} ($maxCount players)")
+    println(s"Max attendance: ${formatDate(maxEvent.date)} ($maxCount players)")
     println(f"Average attendance: ${stats.averageAttendance}%.1f")
     println()
     stats.playerStats.foreach(a => println(s"${a.name}: ${a.timesAttended}"))
+
+  private val dateFormat = DateTimeFormatter.ofPattern("dd.MM.yyyy")
+
+  def formatDate(date: LocalDateTime): String =
+    date.format(dateFormat)
