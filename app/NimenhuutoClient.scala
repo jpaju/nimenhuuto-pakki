@@ -11,13 +11,13 @@ class LiveNimenhuutoClient(baseUrl: String, sessionId: String) extends Nimenhuut
   def fetchAttendanceResponses(eventId: String): AttendanceResponses =
     val url      = s"$baseUrl/events/$eventId"
     val eventDoc = fetchPage(url)
-    parseAttendanceResponses(eventDoc)
+    HtmlParser.attendanceResponses(eventDoc)
 
   def fetchEvents(): Iterator[Event] =
     Iterator
       .unfold(1) { page =>
-        val doc    = fetchPage(s"$baseUrl/events/archive?page=$page")
-        val events = parseEvents(doc)
+        val archivePage = fetchPage(s"$baseUrl/events/archive?page=$page")
+        val events      = HtmlParser.archiveEvents(archivePage)
         if events.isEmpty then None
         else Some((events, page + 1))
       }

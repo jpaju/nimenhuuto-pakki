@@ -1,4 +1,4 @@
-object Render:
+object ConsoleRender:
   def attendanceResponses(responses: AttendanceResponses): Unit =
     println(s"In (${responses.in.size}): ${responses.in.mkString(", ")}")
     println(s"Out (${responses.out.size}): ${responses.out.mkString(", ")}")

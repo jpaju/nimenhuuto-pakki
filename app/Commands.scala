@@ -1,7 +1,7 @@
 class Commands(client: NimenhuutoClient):
   def showEvent(eventId: String): Unit =
     val responses = client.fetchAttendanceResponses(eventId)
-    Render.attendanceResponses(responses)
+    ConsoleRender.attendanceResponses(responses)
 
   def listEvents(count: Int): Unit =
     val events = client
@@ -9,7 +9,7 @@ class Commands(client: NimenhuutoClient):
       .take(count)
       .toList
 
-    Render.events(events)
+    ConsoleRender.events(events)
 
   def eventHistory(count: Int): Unit =
     val attendances = client
@@ -17,7 +17,7 @@ class Commands(client: NimenhuutoClient):
       .take(count)
       .toList
 
-    Render.eventAttendances(attendances)
+    ConsoleRender.eventAttendances(attendances)
 
   def countAttendance(count: Int): Unit =
     val attendances = client
@@ -26,5 +26,5 @@ class Commands(client: NimenhuutoClient):
       .toList
 
     Stats.calculateAttendance(attendances) match
-      case Some(stats) => Render.attendanceStats(stats)
+      case Some(stats) => ConsoleRender.attendanceStats(stats)
       case None        => println("No events found")
