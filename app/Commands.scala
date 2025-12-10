@@ -26,36 +26,17 @@ class Commands(client: NimenhuutoClient):
       }
 
   def countAttendance(count: Int): Unit =
-    val attendances =
-      client
-        .fetchEventAttendances()
-        .take(count)
-        .toList
+    val attendances = client
+      .fetchEventAttendances()
+      .take(count)
+      .toList
 
-    val inPlayers        = attendances.flatMap(_.players.in)
-    val totalAttendances = inPlayers.size
-    val maxAttendance    =
-      attendances
-        .maxByOption(_.players.in.size)
-        .map((a) => s"${a.event.date} (${a.players.in.size} players)")
-        .getOrElse("-")
-
-    val avgAttendance =
-      Option(attendances)
-        .filter(_.nonEmpty)
-        .map(attendances => f"${totalAttendances.toDouble / attendances.size}%.1f")
-        .getOrElse("-")
-
-    val counts =
-      inPlayers
-        .groupBy(identity)
-        .view
-        .mapValues(_.size)
-        .toList
-        .sortBy(-_._2)
-
-    println(s"Total attendances: $totalAttendances")
-    println(s"Max attendance: $maxAttendance")
-    println(s"Average attendance: $avgAttendance")
-    println()
-    counts.foreach((name, count) => println(s"$name: $count"))
+    calculateAttendanceStats(attendances) match
+      case None        => println("No events found")
+      case Some(stats) =>
+        val (maxEvent, maxCount) = stats.maxAttendance
+        println(s"Total attendances: ${stats.totalAttendances}")
+        println(s"Max attendance: ${maxEvent.date} ($maxCount players)")
+        println(f"Average attendance: ${stats.avgAttendance}%.1f")
+        println()
+        stats.playerCounts.foreach((name, count) => println(s"$name: $count"))

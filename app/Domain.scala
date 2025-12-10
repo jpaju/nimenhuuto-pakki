@@ -15,3 +15,10 @@ case class EventAttendance(
     event: Event,
     players: Players
 )
+
+case class AttendanceStats(
+    totalAttendances: Int,
+    maxAttendance: (Event, Int),
+    avgAttendance: Double,
+    playerCounts: List[(String, Int)]
+)
