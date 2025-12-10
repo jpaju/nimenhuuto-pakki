@@ -1,23 +1,27 @@
-def calculateAttendanceStats(attendances: List[EventAttendance]): Option[AttendanceStats] =
-  attendances
-    .maxByOption(_.players.in.size)
-    .map { mostAttendedEvent =>
-      val inPlayers         = attendances.flatMap(_.players.in)
-      val totalAttendances  = inPlayers.size
-      val mostAttended      = (mostAttendedEvent.event, mostAttendedEvent.players.in.size)
-      val averageAttendance = inPlayers.size.toDouble / attendances.size
+object Stats:
+  def calculateAttendance(attendances: List[EventAttendance]): Option[AttendanceStats] =
+    attendances
+      .maxByOption(_.players.in.size)
+      .map { mostAttendedEvent =>
+        val inPlayers         = attendances.flatMap(_.players.in)
+        val totalAttendances  = inPlayers.size
+        val mostAttended      = (mostAttendedEvent.event, mostAttendedEvent.players.in.size)
+        val averageAttendance = inPlayers.size.toDouble / attendances.size
 
-      val playerAttendances = inPlayers
-        .groupBy(identity)
-        .view
-        .mapValues(_.size)
-        .toList
-        .sortBy(-_._2)
+        val playerAttendances = countPlayerAttendances(inPlayers)
 
-      AttendanceStats(
-        totalAttendances,
-        mostAttended,
-        averageAttendance,
-        playerAttendances
-      )
-    }
+        AttendanceStats(
+          totalAttendances = totalAttendances,
+          mostAttended = mostAttended,
+          averageAttendance = averageAttendance,
+          playerAttendances = playerAttendances
+        )
+      }
+
+  private def countPlayerAttendances(inPlayers: List[String]): List[PlayerAttendances] =
+    inPlayers
+      .groupBy(identity)
+      .view
+      .map((player, foo) => PlayerAttendances(player, foo.size))
+      .toList
+      .sortBy(_.attendances)(Ordering.Int.reverse)

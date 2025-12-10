@@ -23,10 +23,10 @@ object Render:
     attendances.foreach(eventAttendance)
 
   def attendanceStats(stats: AttendanceStats): Unit =
-    val (maxEvent, maxCount) = stats.maxAttendance
+    val (maxEvent, maxCount) = stats.mostAttended
 
     println(s"Total attendances: ${stats.totalAttendances}")
     println(s"Max attendance: ${maxEvent.date} ($maxCount players)")
-    println(f"Average attendance: ${stats.avgAttendance}%.1f")
+    println(f"Average attendance: ${stats.averageAttendance}%.1f")
     println()
-    stats.playerCounts.foreach((name, count) => println(s"$name: $count"))
+    stats.playerAttendances.foreach(a => println(s"${a.player}: ${a.attendances}"))

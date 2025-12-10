@@ -25,6 +25,6 @@ class Commands(client: NimenhuutoClient):
       .take(count)
       .toList
 
-    calculateAttendanceStats(attendances) match
+    Stats.calculateAttendance(attendances) match
       case Some(stats) => Render.attendanceStats(stats)
       case None        => println("No events found")
