@@ -26,15 +26,36 @@ class Commands(client: NimenhuutoClient):
       }
 
   def countAttendance(count: Int): Unit =
-    val counts = client // TODO Refactor this monster
-      .fetchEventAttendances()
-      .take(count)
-      .flatMap(_.players.in)
-      .toList
-      .groupBy(identity)
-      .view
-      .mapValues(_.size)
-      .toList
-      .sortBy(-_._2)
+    val attendances =
+      client
+        .fetchEventAttendances()
+        .take(count)
+        .toList
 
+    val inPlayers        = attendances.flatMap(_.players.in)
+    val totalAttendances = inPlayers.size
+    val maxAttendance    =
+      attendances
+        .maxByOption(_.players.in.size)
+        .map((a) => s"${a.event.date} (${a.players.in.size} players)")
+        .getOrElse("-")
+
+    val avgAttendance =
+      Option(attendances)
+        .filter(_.nonEmpty)
+        .map(attendances => f"${totalAttendances.toDouble / attendances.size}%.1f")
+        .getOrElse("-")
+
+    val counts =
+      inPlayers
+        .groupBy(identity)
+        .view
+        .mapValues(_.size)
+        .toList
+        .sortBy(-_._2)
+
+    println(s"Total attendances: $totalAttendances")
+    println(s"Max attendance: $maxAttendance")
+    println(s"Average attendance: $avgAttendance")
+    println()
     counts.foreach((name, count) => println(s"$name: $count"))
