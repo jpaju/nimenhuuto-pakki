@@ -30,6 +30,8 @@ object ConsoleRender:
 
     println(s"Total attendances: ${stats.totalAttendances}")
     println(s"Max attendance: ${formatDate(maxEvent.date)} ($maxCount players)")
+    println(s"First event: ${formatDate(stats.firstEvent.date)} - ${stats.firstEvent.title}")
+    println(s"Last event: ${formatDate(stats.lastEvent.date)} - ${stats.lastEvent.title}")
     println(f"Average attendance: ${stats.averageAttendance}%.1f")
     println()
     stats.playerStats.foreach(a => println(s"${a.name}: ${a.timesAttended}"))

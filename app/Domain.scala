@@ -27,5 +27,7 @@ case class AttendanceStats(
     totalAttendances: Int,
     mostAttended: (Event, Int),
     averageAttendance: Double,
+    firstEvent: Event,
+    lastEvent: Event,
     playerStats: List[PlayerStats]
 )
