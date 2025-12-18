@@ -28,11 +28,14 @@ object ConsoleRender:
   def attendanceStats(stats: AttendanceStats): Unit =
     val (maxEvent, maxCount) = stats.mostAttended
 
+    printSeparator()
     println(s"Total attendances: ${stats.totalAttendances}")
-    println(s"Max attendance: ${formatDate(maxEvent.date)} ($maxCount players)")
-    println(s"First event: ${formatDate(stats.firstEvent.date)} - ${stats.firstEvent.title}")
-    println(s"Last event: ${formatDate(stats.lastEvent.date)} - ${stats.lastEvent.title}")
     println(f"Average attendance: ${stats.averageAttendance}%.1f")
+    println(s"Max attendance: ${formatDate(maxEvent.date)} ($maxCount players)")
+    printSeparator()
+    println(s"First event: ${formatDate(stats.firstEvent.date)}")
+    println(s"Last event: ${formatDate(stats.lastEvent.date)}")
+    printSeparator()
     println()
     stats.playerStats.foreach(a => println(s"${a.name}: ${a.timesAttended}"))
 
@@ -40,3 +43,6 @@ object ConsoleRender:
 
   def formatDate(date: LocalDateTime): String =
     date.format(dateFormat)
+
+  private def printSeparator() =
+    println("-" * 50)
