@@ -16,21 +16,27 @@ object HtmlParser:
 
     AttendanceResponses(inPlayers, outPlayers, unknownPlayers)
 
-  def archiveEvents(archiveDoc: Document): List[Event] =
-    val containers = (archiveDoc >> elements("div.event-detailed-container")).toList
-    containers.flatMap: container =>
-      val linkOpt  = (container >?> element("a.event-title-link"))
-      val titleOpt = linkOpt.map(_.text.trim)
-      val urlOpt   = linkOpt.map(_.attr("href"))
-      val idOpt    = urlOpt.flatMap(_.split("/events/").lastOption)
-      val dateOpt  = (container >?> element("h4")).map(_.text.trim)
+  def archiveEvents(archiveDoc: Document, defaultYear: Int): List[Event] =
+    val eventContainers = (archiveDoc >> elements("div.event-detailed-container")).toList
+    eventContainers.flatMap: eventContainer =>
+      val linkOpt = (eventContainer >?> element("a.event-title-link"))
+      val dateOpt = (eventContainer >?> element("h4"))
 
       for
-        id    <- idOpt
-        url   <- urlOpt
-        title <- titleOpt
-        date  <- dateOpt
+        url     <- linkOpt.map(_.attr("href"))
+        id      <- url.split("/events/").lastOption
+        title   <- linkOpt.map(_.text.trim)
+        dateStr <- dateOpt.map(_.text.trim)
+        date     = parseDate(dateStr, defaultYear).getOrElse(sys.error(s"Failed to parse date: $dateStr"))
       yield Event(id, url, title, date)
+
+  private def namesIn(doc: Document, zoneId: String): List[PlayerName] =
+    val query          = s"#$zoneId span.player_label"
+    val playerElements = (doc >> elements(query)).toList
+
+    playerElements
+      .map(_.text.trim)
+      .map(PlayerName(_))
 
   def parseDate(dateStr: String, defaultYear: Int): Option[LocalDateTime] =
     dateStr match
@@ -42,11 +48,6 @@ object HtmlParser:
 
       case _ =>
         None
-
-  private def namesIn(doc: Document, zoneId: String): List[PlayerName] =
-    val query          = s"#$zoneId span.player_label"
-    val playerElements = (doc >> elements(query)).toList
-    playerElements.map(_.text.trim).map(PlayerName(_))
 
   private def toLocalDateTime(yearStr: String, monthStr: String, dayStr: String, hourStr: String, minuteStr: String) =
     for
