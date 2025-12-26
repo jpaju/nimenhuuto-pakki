@@ -1,51 +1,33 @@
+import com.monovore.decline.*
+
 @main
-def main(command: String, args: String*): Unit =
+def main(args: String*): Unit =
   val baseUrl   = requireEnvVar("BASE_URL")
   val sessionId = requireEnvVar("NIMENHUUTO_SESSION_ID")
 
-  val client   = LiveNimenhuutoClient(baseUrl, sessionId)
-  val commands = Commands(client)
+  val client = LiveNimenhuutoClient(baseUrl, sessionId)
+  val app    = Application(client)
 
-  val defaultCount = 10
+  CliCommand.main.parse(args) match
+    case Left(help) => showHelp(help)
+    case Right(cmd) => runCommand(app)(cmd)
 
-  command match
-    case "show-event" =>
-      if args.isEmpty then exitWithError("Usage: show-event <event-id>")
-      else commands.showEvent(args.head)
+private def showHelp(help: Help) =
+  val (output, exitCode) = help.errors match
+    case Nil => System.out -> 0
+    case _   => System.err -> 1
 
-    case "list-events" =>
-      val count = args.headOption.map(_.toInt).getOrElse(defaultCount)
-      commands.listEvents(count)
+  output.println(help)
+  sys.exit(exitCode)
 
-    case "count-attendance" =>
-      val count = args.headOption.map(_.toInt).getOrElse(defaultCount)
-      commands.countAttendance(count)
+private def runCommand(app: Application): CliCommand => Unit =
+  case CliCommand.ShowEvent(eventId)     => app.showEvent(eventId)
+  case CliCommand.ListEvents(count)      => app.listEvents(count)
+  case CliCommand.CountAttendance(count) => app.countAttendance(count)
+  case CliCommand.EventHistory(count)    => app.eventHistory(count)
 
-    case "event-history" =>
-      val count = args.headOption.map(_.toInt).getOrElse(defaultCount)
-      commands.eventHistory(count)
-
-    case "help" =>
-      printHelp()
-
-    case _ =>
-      println(s"Unknown command: '$command'\n")
-      printHelp()
-
-def printHelp() =
-  println(
-    s"""Commands:
-       |  - show-event <url>
-       |  - list-events [count]
-       |  - count-attendance [count]
-       |  - event-history [count]""".stripMargin
-  )
-
-def requireEnvVar(name: String): String =
-  sys.env.get(name) match
-    case Some(value) => value
-    case None        => exitWithError(s"$name env var not set")
-
-def exitWithError(error: String): Nothing =
-  System.err.println(error)
-  sys.exit(1)
+private def requireEnvVar(name: String): String =
+  sys.env.get(name).getOrElse {
+    System.err.println(s"$name env var not set")
+    sys.exit(1)
+  }

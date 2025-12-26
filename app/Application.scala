@@ -1,4 +1,4 @@
-class Commands(client: NimenhuutoClient):
+class Application(client: NimenhuutoClient):
   def showEvent(eventId: String): Unit =
     val responses = client.fetchAttendanceResponses(eventId)
     ConsoleRender.attendanceResponses(responses)
