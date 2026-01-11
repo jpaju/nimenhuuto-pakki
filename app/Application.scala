@@ -1,30 +1,18 @@
-class Application(client: NimenhuutoClient):
+class Application(service: NimenhuutoService):
   def showEvent(eventId: String): Unit =
-    val responses = client.fetchAttendanceResponses(eventId)
+    val responses = service.fetchAttendanceResponses(eventId)
     ConsoleRender.attendanceResponses(responses)
 
   def listEvents(count: Int): Unit =
-    val events = client
-      .fetchEvents()
-      .take(count)
-      .toList
-
+    val events = service.listEvents(count)
     ConsoleRender.events(events)
 
   def eventHistory(count: Int): Unit =
-    val attendances = client
-      .fetchEventAttendances()
-      .take(count)
-      .toList
-
+    val attendances = service.fetchEventAttendances(count)
     ConsoleRender.eventAttendances(attendances)
 
   def countAttendance(count: Int): Unit =
-    val attendances = client
-      .fetchEventAttendances()
-      .take(count)
-      .toList
-
+    val attendances = service.fetchEventAttendances(count)
     Stats.calculateAttendance(attendances) match
       case Some(stats) => ConsoleRender.attendanceStats(stats)
       case None        => println("No events found")

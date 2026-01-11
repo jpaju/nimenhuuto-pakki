@@ -5,8 +5,9 @@ def main(args: String*): Unit =
   val baseUrl   = requireEnvVar("BASE_URL")
   val sessionId = requireEnvVar("NIMENHUUTO_SESSION_ID")
 
-  val client = LiveNimenhuutoClient(baseUrl, sessionId)
-  val app    = Application(client)
+  val client  = LiveNimenhuutoClient(baseUrl, sessionId)
+  val service = NimenhuutoService(client)
+  val app     = Application(service)
 
   CliCommand.main.parse(args) match
     case Left(help) => showHelp(help)
