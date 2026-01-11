@@ -17,7 +17,12 @@ class NimenhuutoService(client: NimenhuutoClient):
     filter match
       case EventFilter.ByCount(n)      => events.take(n)
       case EventFilter.NewerThan(date) => events.takeWhile(a => !getDate(a).toLocalDate.isBefore(date))
+      case EventFilter.DateRange(since, until) =>
+        events
+          .dropWhile(a => getDate(a).toLocalDate.isAfter(until))
+          .takeWhile(a => !getDate(a).toLocalDate.isBefore(since))
 
 enum EventFilter:
   case ByCount(n: Int)
   case NewerThan(date: LocalDate)
+  case DateRange(since: LocalDate, until: LocalDate)
