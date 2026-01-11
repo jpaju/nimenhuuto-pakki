@@ -3,18 +3,15 @@ class Application(service: NimenhuutoService):
     val responses = service.fetchAttendanceResponses(eventId)
     ConsoleRender.attendanceResponses(responses)
 
-  def listEvents(count: Int): Unit =
-    val filter = EventFilter.ByCount(count)
+  def listEvents(filter: EventFilter): Unit =
     val events = service.listEvents(filter)
     ConsoleRender.events(events)
 
-  def eventHistory(count: Int): Unit =
-    val filter      = EventFilter.ByCount(count)
+  def eventHistory(filter: EventFilter): Unit =
     val attendances = service.fetchEventAttendances(filter)
     ConsoleRender.eventAttendances(attendances)
 
-  def countAttendance(count: Int): Unit =
-    val filter      = EventFilter.ByCount(count)
+  def countAttendance(filter: EventFilter): Unit =
     val attendances = service.fetchEventAttendances(filter)
 
     Stats.calculateAttendance(attendances) match

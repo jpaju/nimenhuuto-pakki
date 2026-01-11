@@ -23,9 +23,9 @@ private def showHelp(help: Help) =
 
 private def runCommand(app: Application): CliCommand => Unit =
   case CliCommand.ShowEvent(eventId)     => app.showEvent(eventId)
-  case CliCommand.ListEvents(count)      => app.listEvents(count)
-  case CliCommand.CountAttendance(count) => app.countAttendance(count)
-  case CliCommand.EventHistory(count)    => app.eventHistory(count)
+  case CliCommand.ListEvents(filter)     => app.listEvents(filter)
+  case CliCommand.CountAttendance(filter) => app.countAttendance(filter)
+  case CliCommand.EventHistory(filter)    => app.eventHistory(filter)
 
 private def requireEnvVar(name: String): String =
   sys.env.get(name).getOrElse {
