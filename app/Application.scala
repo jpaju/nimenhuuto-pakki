@@ -4,15 +4,19 @@ class Application(service: NimenhuutoService):
     ConsoleRender.attendanceResponses(responses)
 
   def listEvents(count: Int): Unit =
-    val events = service.listEvents(count)
+    val filter = EventFilter.ByCount(count)
+    val events = service.listEvents(filter)
     ConsoleRender.events(events)
 
   def eventHistory(count: Int): Unit =
-    val attendances = service.fetchEventAttendances(count)
+    val filter      = EventFilter.ByCount(count)
+    val attendances = service.fetchEventAttendances(filter)
     ConsoleRender.eventAttendances(attendances)
 
   def countAttendance(count: Int): Unit =
-    val attendances = service.fetchEventAttendances(count)
+    val filter      = EventFilter.ByCount(count)
+    val attendances = service.fetchEventAttendances(filter)
+
     Stats.calculateAttendance(attendances) match
       case Some(stats) => ConsoleRender.attendanceStats(stats)
       case None        => println("No events found")
