@@ -1,0 +1,17 @@
+name: Scala CI
+
+on:
+  push:
+
+jobs:
+  unit-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Nix
+        uses: jpaju/gh-commons/actions/setup-nix@main
+
+      - name: Run unit tests
+        run: nix develop --command scala-cli test .
