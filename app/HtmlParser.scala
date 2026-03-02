@@ -27,7 +27,7 @@ object HtmlParser:
         id      <- url.split("/events/").lastOption
         title   <- linkOpt.map(_.text.trim)
         dateStr <- dateOpt.map(_.text.trim)
-        date     = parseDate(dateStr, defaultYear).getOrElse(sys.error(s"Failed to parse date: $dateStr"))
+        date     = DateParser.parseDate(dateStr, defaultYear).getOrElse(sys.error(s"Failed to parse date: $dateStr"))
       yield Event(id, url, title, date)
 
   private def namesIn(doc: Document, zoneId: String): List[PlayerName] =
@@ -37,23 +37,3 @@ object HtmlParser:
     playerElements
       .map(_.text.trim)
       .map(PlayerName(_))
-
-  def parseDate(dateStr: String, defaultYear: Int): Option[LocalDateTime] =
-    dateStr match
-      case s"$_ $day.$month. klo $hour:$minute" =>
-        toLocalDateTime(defaultYear.toString, month, day, hour, minute)
-
-      case s"$_ $day.$month.$year klo $hour:$minute" =>
-        toLocalDateTime(year, month, day, hour, minute)
-
-      case _ =>
-        None
-
-  private def toLocalDateTime(yearStr: String, monthStr: String, dayStr: String, hourStr: String, minuteStr: String) =
-    for
-      year   <- yearStr.toIntOption
-      month  <- monthStr.toIntOption
-      day    <- dayStr.toIntOption
-      hour   <- hourStr.toIntOption
-      minute <- minuteStr.toIntOption
-    yield LocalDateTime.of(year, month, day, hour, minute)
