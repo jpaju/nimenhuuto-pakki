@@ -15,8 +15,8 @@ class NimenhuutoService(client: NimenhuutoClient):
 
   private def applyFilter[A](filter: EventFilter, events: Iterator[A], getDate: A => LocalDateTime) =
     filter match
-      case EventFilter.ByCount(n)      => events.take(n)
-      case EventFilter.NewerThan(date) => events.takeWhile(a => !getDate(a).toLocalDate.isBefore(date))
+      case EventFilter.ByCount(n)              => events.take(n)
+      case EventFilter.NewerThan(date)         => events.takeWhile(a => !getDate(a).toLocalDate.isBefore(date))
       case EventFilter.DateRange(since, until) =>
         events
           .dropWhile(a => getDate(a).toLocalDate.isAfter(until))

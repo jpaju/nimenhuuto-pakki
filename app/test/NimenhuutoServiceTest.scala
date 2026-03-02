@@ -38,7 +38,7 @@ class NimenhuutoServiceTest extends munit.FunSuite:
     assertEquals(result, events.take(2))
 
   test("listEvents - filters events by date range"):
-    val events = List(
+    val events  = List(
       Event("1", "/1", "Harkka", LocalDateTime.parse("2025-01-10T20:00")),
       Event("2", "/2", "Harkka", LocalDateTime.parse("2025-01-09T20:00")),
       Event("3", "/3", "Harkka", LocalDateTime.parse("2025-01-08T20:00")),
@@ -73,8 +73,8 @@ class NimenhuutoServiceTest extends munit.FunSuite:
       EventAttendance(Event("2", "/2", "Harkka", LocalDateTime.parse("2025-01-09T20:00")), responses),
       EventAttendance(Event("3", "/3", "Harkka", LocalDateTime.parse("2025-01-08T20:00")), responses)
     )
-    val client  = StubNimenhuutoClient(eventAttendances = attendances)
-    val service = NimenhuutoService(client)
+    val client      = StubNimenhuutoClient(eventAttendances = attendances)
+    val service     = NimenhuutoService(client)
 
     val result = service.fetchEventAttendances(EventFilter.NewerThan(LocalDate.parse("2025-01-09")))
 
@@ -88,8 +88,8 @@ class NimenhuutoServiceTest extends munit.FunSuite:
       EventAttendance(Event("3", "/3", "Harkka", LocalDateTime.parse("2025-01-08T20:00")), responses),
       EventAttendance(Event("4", "/4", "Harkka", LocalDateTime.parse("2025-01-07T20:00")), responses)
     )
-    val client  = StubNimenhuutoClient(eventAttendances = attendances)
-    val service = NimenhuutoService(client)
+    val client      = StubNimenhuutoClient(eventAttendances = attendances)
+    val service     = NimenhuutoService(client)
 
     val filter = EventFilter.DateRange(LocalDate.parse("2025-01-08"), LocalDate.parse("2025-01-09"))
     val result = service.fetchEventAttendances(filter)
