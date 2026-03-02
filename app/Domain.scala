@@ -7,13 +7,13 @@ case class Event(
     date: LocalDateTime
 )
 
-opaque type PlayerName = String
-def PlayerName(value: String): PlayerName = value
+opaque type ShortName = String
+def ShortName(value: String): ShortName = value
 
 case class AttendanceResponses(
-    in: List[PlayerName],
-    out: List[PlayerName],
-    unknown: List[PlayerName]
+    in: List[ShortName],
+    out: List[ShortName],
+    unknown: List[ShortName]
 )
 
 case class EventAttendance(
@@ -21,7 +21,7 @@ case class EventAttendance(
     responses: AttendanceResponses
 )
 
-case class PlayerStats(name: PlayerName, timesAttended: Int)
+case class PlayerStats(name: ShortName, timesAttended: Int)
 
 case class AttendanceStats(
     totalAttendances: Int,

@@ -9,9 +9,9 @@ class HtmlParserTest extends munit.FunSuite:
 
     val actual   = HtmlParser.attendanceResponses(doc)
     val expected = AttendanceResponses(
-      in = List("Alice A", "Bob B", "Charlie C").map(PlayerName(_)),
-      out = List("Diana D", "Eve E").map(PlayerName(_)),
-      unknown = List("Frank F", "Grace G").map(PlayerName(_))
+      in = List("Alice A", "Bob B", "Charlie C").map(ShortName(_)),
+      out = List("Diana D", "Eve E").map(ShortName(_)),
+      unknown = List("Frank F", "Grace G").map(ShortName(_))
     )
 
     assertEquals(actual, expected)

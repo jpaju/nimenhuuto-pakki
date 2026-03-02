@@ -44,7 +44,7 @@ class NimenhuutoServiceTest extends munit.FunSuite:
     assertEquals(result, List(events(1), events(2)))
 
   test("fetchEventAttendances - limits by count"):
-    val responses   = AttendanceResponses(List(PlayerName("Alice")), Nil, Nil)
+    val responses   = AttendanceResponses(List(ShortName("Alice")), Nil, Nil)
     val attendances = List(
       EventAttendance(Event("1", "/1", "Harkka", LocalDateTime.parse("2025-01-10T20:00")), responses),
       EventAttendance(Event("2", "/2", "Harkka", LocalDateTime.parse("2025-01-09T20:00")), responses),
@@ -58,7 +58,7 @@ class NimenhuutoServiceTest extends munit.FunSuite:
     assertEquals(result, attendances.take(2))
 
   test("fetchEventAttendances - filters events newer than date"):
-    val responses   = AttendanceResponses(List(PlayerName("Alice")), Nil, Nil)
+    val responses   = AttendanceResponses(List(ShortName("Alice")), Nil, Nil)
     val attendances = List(
       EventAttendance(Event("1", "/1", "Harkka", LocalDateTime.parse("2025-01-10T20:00")), responses),
       EventAttendance(Event("2", "/2", "Harkka", LocalDateTime.parse("2025-01-09T20:00")), responses),
@@ -72,7 +72,7 @@ class NimenhuutoServiceTest extends munit.FunSuite:
     assertEquals(result, attendances.take(2))
 
   test("fetchEventAttendances - filters events by date range"):
-    val responses   = AttendanceResponses(List(PlayerName("Alice")), Nil, Nil)
+    val responses   = AttendanceResponses(List(ShortName("Alice")), Nil, Nil)
     val attendances = List(
       EventAttendance(Event("1", "/1", "Harkka", LocalDateTime.parse("2025-01-10T20:00")), responses),
       EventAttendance(Event("2", "/2", "Harkka", LocalDateTime.parse("2025-01-09T20:00")), responses),

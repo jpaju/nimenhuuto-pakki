@@ -21,7 +21,7 @@ object Stats:
         )
       }
 
-  private def countPlayerStats(inPlayers: List[PlayerName]): List[PlayerStats] =
+  private def countPlayerStats(inPlayers: List[ShortName]): List[PlayerStats] =
     inPlayers
       .groupBy(identity)
       .view

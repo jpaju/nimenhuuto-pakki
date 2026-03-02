@@ -30,10 +30,10 @@ object HtmlParser:
         date     = DateParser.parseDate(dateStr, defaultYear).getOrElse(sys.error(s"Failed to parse date: $dateStr"))
       yield Event(id, url, title, date)
 
-  private def namesIn(doc: Document, zoneId: String): List[PlayerName] =
+  private def namesIn(doc: Document, zoneId: String): List[ShortName] =
     val query          = s"#$zoneId span.player_label"
     val playerElements = (doc >> elements(query)).toList
 
     playerElements
       .map(_.text.trim)
-      .map(PlayerName(_))
+      .map(ShortName(_))
