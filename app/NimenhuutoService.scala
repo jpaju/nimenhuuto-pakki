@@ -2,9 +2,6 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 class NimenhuutoService(client: NimenhuutoClient):
-  def fetchAttendanceResponses(eventId: String): AttendanceResponses =
-    client.fetchAttendanceResponses(eventId)
-
   def listEvents(filter: EventFilter): List[Event] =
     val events = client.fetchEvents()
     applyFilter(filter, events, _.date).toList

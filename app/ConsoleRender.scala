@@ -2,11 +2,6 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 object ConsoleRender:
-  def attendanceResponses(responses: AttendanceResponses): Unit =
-    println(s"In (${responses.in.size}): ${responses.in.mkString(", ")}")
-    println(s"Out (${responses.out.size}): ${responses.out.mkString(", ")}")
-    println(s"Unknown (${responses.unknown.size}): ${responses.unknown.mkString(", ")}")
-
   def event(e: Event): Unit =
     println(s"${formatDate(e.date)} - ${e.title} (${e.url})")
 

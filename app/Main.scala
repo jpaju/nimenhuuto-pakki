@@ -22,7 +22,6 @@ private def showHelp(help: Help) =
   sys.exit(exitCode)
 
 private def runCommand(app: Application): CliCommand => Unit =
-  case CliCommand.ShowEvent(eventId)      => app.showEvent(eventId)
   case CliCommand.ListEvents(filter)      => app.listEvents(filter)
   case CliCommand.CountAttendance(filter) => app.countAttendance(filter)
   case CliCommand.EventHistory(filter)    => app.eventHistory(filter)

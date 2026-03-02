@@ -4,7 +4,6 @@ import cats.syntax.all.*
 import java.time.*
 
 enum CliCommand:
-  case ShowEvent(eventId: String)
   case ListEvents(filter: EventFilter)
   case CountAttendance(filter: EventFilter)
   case EventHistory(filter: EventFilter)
@@ -18,10 +17,6 @@ object CliCommand:
       Opts.option[LocalDate]("until", "End of date range")
     ).mapN(EventFilter.DateRange(_, _))
     count.orElse(dateRange).orElse(since)
-
-  private val showEvent: Opts[CliCommand] =
-    Opts.subcommand("show-event", "Show attendance for an event"):
-      Opts.argument[String]("event-id").map(CliCommand.ShowEvent(_))
 
   private val listEvents: Opts[CliCommand] =
     Opts.subcommand("list-events", "List latest events"):
@@ -37,7 +32,6 @@ object CliCommand:
 
   val main: Command[CliCommand] =
     Command(name = "nh-toolkit", header = "Nimenhuuto toolkit"):
-      showEvent
-        .orElse(listEvents)
+      listEvents
         .orElse(countAttendance)
         .orElse(eventHistory)

@@ -2,15 +2,6 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 class NimenhuutoServiceTest extends munit.FunSuite:
-  test("fetchAttendanceResponses - delegates to client"):
-    val responses = AttendanceResponses(List(PlayerName("Alice")), List(PlayerName("Bob")), Nil)
-    val client    = StubNimenhuutoClient(responses, Nil)
-    val service   = NimenhuutoService(client)
-
-    val result = service.fetchAttendanceResponses("123")
-
-    assertEquals(result, responses)
-
   test("listEvents - limits by count"):
     val events  = List(
       Event("1", "/1", "Harkka", LocalDateTime.parse("2025-01-10T20:00")),

@@ -4,7 +4,6 @@ import java.time.LocalDateTime
 
 // TODO Error handling (missing events, network/authentication/parsing errors) ?
 trait NimenhuutoClient:
-  def fetchAttendanceResponses(eventId: String): AttendanceResponses
   def fetchEvents(): Iterator[Event]
   def fetchEventAttendances(): Iterator[EventAttendance]
 

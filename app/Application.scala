@@ -1,8 +1,4 @@
 class Application(service: NimenhuutoService):
-  def showEvent(eventId: String): Unit =
-    val responses = service.fetchAttendanceResponses(eventId)
-    ConsoleRender.attendanceResponses(responses)
-
   def listEvents(filter: EventFilter): Unit =
     val events = service.listEvents(filter)
     ConsoleRender.events(events)
