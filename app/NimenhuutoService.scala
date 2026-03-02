@@ -10,6 +10,9 @@ class NimenhuutoService(client: NimenhuutoClient):
     val events = client.fetchEventAttendances()
     applyFilter(filter, events, _.event.date).toList
 
+  def fetchPlayers(): List[Player] =
+    client.fetchPlayers()
+
   private def applyFilter[A](filter: EventFilter, events: Iterator[A], getDate: A => LocalDateTime) =
     filter match
       case EventFilter.ByCount(n)              => events.take(n)

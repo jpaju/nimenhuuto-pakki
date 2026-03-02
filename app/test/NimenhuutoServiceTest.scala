@@ -90,8 +90,10 @@ class NimenhuutoServiceTest extends munit.FunSuite:
 class StubNimenhuutoClient(
     attendanceResponses: AttendanceResponses = AttendanceResponses(Nil, Nil, Nil),
     events: List[Event] = Nil,
-    eventAttendances: List[EventAttendance] = Nil
+    eventAttendances: List[EventAttendance] = Nil,
+    players: List[Player] = Nil
 ) extends NimenhuutoClient:
   def fetchAttendanceResponses(eventId: String): AttendanceResponses = attendanceResponses
   def fetchEvents(): Iterator[Event]                                 = events.iterator
   def fetchEventAttendances(): Iterator[EventAttendance]             = eventAttendances.iterator
+  def fetchPlayers(): List[Player]                                   = players

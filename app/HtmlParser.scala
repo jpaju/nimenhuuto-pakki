@@ -30,6 +30,24 @@ object HtmlParser:
         date     = DateParser.parseDate(dateStr, defaultYear).getOrElse(sys.error(s"Failed to parse date: $dateStr"))
       yield Event(id, url, title, date)
 
+  def players(playersDoc: Document): List[Player] =
+    val playerCards = (playersDoc >> elements("div.playercard")).toList
+    playerCards.flatMap: card =>
+      val h3Opt     = card >?> element("h3")
+      val smallText = h3Opt.flatMap(_ >?> element("small")).map(_.text).getOrElse("")
+      val nameOpt   = h3Opt.map(_.text.replace(smallText, "").trim)
+      val emailOpt  = (card >?> element("span.emai")).map(_.text.trim)
+      val phoneOpt  = (card >?> element("a[href^=tel://]")).map(_.text.trim)
+
+      nameOpt
+        .filter(_.nonEmpty)
+        .map: name =>
+          Player(
+            name = LongName(name),
+            email = emailOpt.map(Email(_)),
+            phone = phoneOpt.map(PhoneNumber(_))
+          )
+
   private def namesIn(doc: Document, zoneId: String): List[ShortName] =
     val query          = s"#$zoneId span.player_label"
     val playerElements = (doc >> elements(query)).toList

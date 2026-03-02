@@ -6,6 +6,7 @@ import java.time.LocalDateTime
 trait NimenhuutoClient:
   def fetchEvents(): Iterator[Event]
   def fetchEventAttendances(): Iterator[EventAttendance]
+  def fetchPlayers(): List[Player]
 
 class LiveNimenhuutoClient(baseUrl: String, sessionId: String) extends NimenhuutoClient:
   def fetchAttendanceResponses(eventId: String): AttendanceResponses =
@@ -28,6 +29,10 @@ class LiveNimenhuutoClient(baseUrl: String, sessionId: String) extends Nimenhuut
       val responses = fetchAttendanceResponses(event.id)
       EventAttendance(event, responses)
     }
+
+  def fetchPlayers(): List[Player] =
+    val playersPage = fetchPage(s"$baseUrl/players")
+    HtmlParser.players(playersPage)
 
   private def fetchPage(url: String): Document =
     val browser = JsoupBrowser.typed() // TODO Share browser instance?

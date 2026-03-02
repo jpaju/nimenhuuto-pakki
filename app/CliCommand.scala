@@ -7,6 +7,7 @@ enum CliCommand:
   case ListEvents(filter: EventFilter)
   case CountAttendance(filter: EventFilter)
   case EventHistory(filter: EventFilter)
+  case ShowRoster
 
 object CliCommand:
   private val eventFilterOption: Opts[EventFilter] =
@@ -30,8 +31,13 @@ object CliCommand:
     Opts.subcommand("event-history", "Show event attendance history"):
       eventFilterOption.map(CliCommand.EventHistory(_))
 
+  private val showRoster: Opts[CliCommand] =
+    Opts.subcommand("show-roster", "Show team roster with contact info"):
+      Opts(CliCommand.ShowRoster)
+
   val main: Command[CliCommand] =
     Command(name = "nh-toolkit", header = "Nimenhuuto toolkit"):
       listEvents
         .orElse(countAttendance)
         .orElse(eventHistory)
+        .orElse(showRoster)

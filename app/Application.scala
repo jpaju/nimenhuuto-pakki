@@ -13,3 +13,7 @@ class Application(service: NimenhuutoService):
     Stats.calculateAttendance(attendances) match
       case Some(stats) => ConsoleRender.attendanceStats(stats)
       case None        => println("No events found")
+
+  def showRoster(): Unit =
+    val players = service.fetchPlayers()
+    ConsoleRender.roster(players)

@@ -37,6 +37,30 @@ class HtmlParserTest extends munit.FunSuite:
 
     assertEquals(actual, expected)
 
+  test("players - parses players page correctly"):
+    val doc = readDocumentFromFile("data/players.html")
+
+    val actual   = HtmlParser.players(doc)
+    val expected = List(
+      Player(
+        LongName("Alice Anderson"),
+        Some(Email("alice@example.com")),
+        Some(PhoneNumber("+358 40 111 2233"))
+      ),
+      Player(
+        LongName("Bob Brown"),
+        Some(Email("bob@example.com")),
+        Some(PhoneNumber("+358 40 123 4567"))
+      ),
+      Player(
+        LongName("Charlie Clark"),
+        Some(Email("charlie@example.com")),
+        Some(PhoneNumber("+358 50 987 6543"))
+      )
+    )
+
+    assertEquals(actual, expected)
+
 private def readDocumentFromFile(filePath: String) =
   val browser = JsoupBrowser.typed()
   browser.parseFile(new File(filePath))

@@ -7,8 +7,19 @@ case class Event(
     date: LocalDateTime
 )
 
-opaque type ShortName = String
+opaque type ShortName <: String = String
 def ShortName(value: String): ShortName = value
+
+opaque type LongName <: String = String
+def LongName(value: String): LongName = value
+
+opaque type Email <: String = String
+def Email(value: String): Email = value
+
+opaque type PhoneNumber <: String = String
+def PhoneNumber(value: String): PhoneNumber = value
+
+case class Player(name: LongName, email: Option[Email], phone: Option[PhoneNumber])
 
 case class AttendanceResponses(
     in: List[ShortName],

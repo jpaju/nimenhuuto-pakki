@@ -41,3 +41,32 @@ object ConsoleRender:
 
   private def printSeparator() =
     println("-" * 50)
+
+  def roster(players: List[Player]): Unit =
+    if players.nonEmpty then
+      val header = List("Name", "Email", "Phone")
+      val rows   = players.map: p =>
+        List(
+          p.name.toString,
+          p.email.getOrElse("-"),
+          p.phone.getOrElse("-")
+        )
+
+      println(Tabulator.format(header :: rows))
+
+// Shamelessly copied from https://stackoverflow.com/questions/7539831/scala-draw-table-to-console
+private object Tabulator:
+  def format(table: List[List[String]]): String =
+    val colSizes = table.transpose.map(_.map(_.length).max + 2)
+    val rows     = table.map(row => formatRow(row, colSizes))
+    val top      = colSizes.map("─" * _).mkString("╭", "┬", "╮")
+    val mid      = colSizes.map("─" * _).mkString("├", "┼", "┤")
+    val bot      = colSizes.map("─" * _).mkString("╰", "┴", "╯")
+
+    (top :: rows.head :: mid :: rows.tail ::: List(bot)).mkString("\n")
+
+  private def formatRow(row: List[String], colSizes: List[Int]): String =
+    row
+      .zip(colSizes)
+      .map((item, size) => s" %-${size - 1}s".format(item))
+      .mkString("│", "│", "│")

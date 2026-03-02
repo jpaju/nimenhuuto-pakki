@@ -25,6 +25,7 @@ private def runCommand(app: Application): CliCommand => Unit =
   case CliCommand.ListEvents(filter)      => app.listEvents(filter)
   case CliCommand.CountAttendance(filter) => app.countAttendance(filter)
   case CliCommand.EventHistory(filter)    => app.eventHistory(filter)
+  case CliCommand.ShowRoster              => app.showRoster()
 
 private def requireEnvVar(name: String): String =
   sys.env.get(name).getOrElse {
