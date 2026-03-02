@@ -32,7 +32,7 @@ All required tools are available in nix development shell, activate with `nix de
 - [x] Discover all events automatically
   - [x] Support filtering events by dates
 - [x] Calculate attendance for every player across multiple events
-- [ ] Add parsing tests with HTML files downloaded from browser
+- [x] Add parsing tests with HTML files downloaded from browser
 - [ ] Show roster: list all players with their emails etc.
 - [ ] Check that no one has canceled their registration after the event
 - [ ] Error handling

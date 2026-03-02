@@ -1,21 +1,33 @@
+import java.io.File
 import java.time.LocalDateTime
 
+import net.ruippeixotog.scalascraper.browser.JsoupBrowser
+
 class HtmlParserTest extends munit.FunSuite:
-  test("parseDate - date without year uses provided default year"):
-    val actual   = HtmlParser.parseDate("Ti 9.12. klo 21:00", 2025)
-    val expected = LocalDateTime.parse("2025-12-09T21:00")
-    assertEquals(actual, Some(expected))
+  test("attendanceResponses - parses event page correctly"):
+    val doc      = readDocumentFromFile("data/event.html")
 
-  test("parseDate - date with explicit year ignores default year"):
-    val actual   = HtmlParser.parseDate("Ti 17.12.2024 klo 21:00", 2025)
-    val expected = LocalDateTime.parse("2024-12-17T21:00")
-    assertEquals(actual, Some(expected))
+    val actual   = HtmlParser.attendanceResponses(doc)
+    val expected = AttendanceResponses(
+      in      = List("Alice A", "Bob B", "Charlie C").map(PlayerName(_)),
+      out     = List("Diana D", "Eve E").map(PlayerName(_)),
+      unknown = List("Frank F", "Grace G").map(PlayerName(_))
+    )
 
-  test("parseDate - single digit day and month"):
-    val actual   = HtmlParser.parseDate("Ti 7.1. klo 21:00", 2025)
-    val expected = LocalDateTime.parse("2025-01-07T21:00")
-    assertEquals(actual, Some(expected))
+    assertEquals(actual, expected)
 
-  test("parseDate - invalid input"):
-    val actual = HtmlParser.parseDate("foo", 2025)
-    assertEquals(actual, None)
+  test("archiveEvents - parses archive page correctly"):
+    val doc      = readDocumentFromFile("data/archive.html")
+
+    val actual   = HtmlParser.archiveEvents(doc, defaultYear = 2025)
+    val expected = List(
+      Event("19457290", "https://exampleteam.nimenhuuto.com/events/19457290", "Harkka", LocalDateTime.of(2025, 12, 2, 21, 0)),
+      Event("19457289", "https://exampleteam.nimenhuuto.com/events/19457289", "Harkka", LocalDateTime.of(2025, 11, 25, 21, 0))
+    )
+
+    assertEquals(actual, expected)
+
+private def readDocumentFromFile(filePath: String) =
+  val browser = JsoupBrowser.typed()
+  browser.parseFile(new File(filePath))
+
