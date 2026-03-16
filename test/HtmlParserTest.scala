@@ -4,8 +4,10 @@ import java.time.LocalDateTime
 import net.ruippeixotog.scalascraper.browser.JsoupBrowser
 
 class HtmlParserTest extends munit.FunSuite:
+  private val baseDataPath = "test/data"
+
   test("attendanceResponses - parses event page correctly"):
-    val doc = readDocumentFromFile("data/event.html")
+    val doc = readDocumentFromFile(s"$baseDataPath/event.html")
 
     val actual   = HtmlParser.attendanceResponses(doc)
     val expected = AttendanceResponses(
@@ -17,7 +19,7 @@ class HtmlParserTest extends munit.FunSuite:
     assertEquals(actual, expected)
 
   test("archiveEvents - parses archive page correctly"):
-    val doc = readDocumentFromFile("data/archive.html")
+    val doc = readDocumentFromFile(s"$baseDataPath/archive.html")
 
     val actual   = HtmlParser.archiveEvents(doc, defaultYear = 2025)
     val expected = List(
@@ -38,7 +40,7 @@ class HtmlParserTest extends munit.FunSuite:
     assertEquals(actual, expected)
 
   test("players - parses players page correctly"):
-    val doc = readDocumentFromFile("data/players.html")
+    val doc = readDocumentFromFile(s"$baseDataPath/players.html")
 
     val actual   = HtmlParser.players(doc)
     val expected = List(
