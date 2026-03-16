@@ -1,4 +1,4 @@
 //> using scala "3.3.7"
 //> using dep "net.ruippeixotog::scala-scraper:3.2.0"
-//> using dep "com.monovore::decline::2.6.0"
-//> using test.dep "org.scalameta::munit:1.2.3"
+//> using dep "com.monovore::decline::2.6.1"
+//> using test.dep "org.scalameta::munit:1.2.4"
