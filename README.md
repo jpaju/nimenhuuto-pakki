@@ -15,10 +15,10 @@ Currently only scrapes player attendance/registration data from events.
 
 ```bash
 # Run commands
-scala-cli run app -- <cmd> <arguments>
+scala-cli run . -- <cmd> <arguments>
 
 # Show help/available commands
-scala-cli run app -- help
+scala-cli run . -- help
 ```
 
 ## Development

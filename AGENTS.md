@@ -6,10 +6,10 @@ Parses player registration status (in/out/unknown) from event pages.
 ## Commands
 
 ```bash
-scala-cli run app -- <args>       # run
-scala-cli fmt app                 # format
-scala-cli test app                # run all tests
-scala-cli test app -- "*MyTest*"  # run single test
+scala-cli run . -- <args>       # run
+scala-cli fmt .                 # format
+scala-cli test .                # run all tests
+scala-cli test . -- "*MyTest*"  # run single test
 ```
 
 ## Code style
