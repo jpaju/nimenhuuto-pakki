@@ -35,6 +35,7 @@ case class EventAttendance(
 case class PlayerStats(name: ShortName, timesAttended: Int)
 
 case class AttendanceStats(
+    totalEvents: Int,
     totalAttendances: Int,
     mostAttended: (Event, Int),
     averageAttendance: Double,

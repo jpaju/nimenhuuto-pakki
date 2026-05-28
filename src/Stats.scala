@@ -4,14 +4,16 @@ object Stats:
       .maxByOption(_.responses.in.size)
       .map { mostAttendedEvent =>
         val inPlayers         = attendances.flatMap(_.responses.in)
+        val totalEvents       = attendances.size
         val totalAttendances  = inPlayers.size
         val mostAttended      = (mostAttendedEvent.event, mostAttendedEvent.responses.in.size)
-        val averageAttendance = inPlayers.size.toDouble / attendances.size
+        val averageAttendance = inPlayers.size.toDouble / totalEvents
 
         val (firstEvent, lastEvent) = findFirstAndLastEvent(attendances)
         val playerStats             = countPlayerStats(inPlayers)
 
         AttendanceStats(
+          totalEvents = totalEvents,
           totalAttendances = totalAttendances,
           mostAttended = mostAttended,
           averageAttendance = averageAttendance,

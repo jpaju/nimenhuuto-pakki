@@ -30,6 +30,7 @@ object ConsoleRender:
     printSeparator()
     println(s"First event: ${formatDate(stats.firstEvent.date)}")
     println(s"Last event: ${formatDate(stats.lastEvent.date)}")
+    println(s"Total events: ${stats.totalEvents}")
     printSeparator()
     println()
     stats.playerStats.foreach(a => println(s"${a.name}: ${a.timesAttended}"))
