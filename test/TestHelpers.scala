@@ -9,3 +9,8 @@ def attendanceResponses(
 
 def event(id: String, date: String): Event =
   Event(id, s"/$id", "Harkka", LocalDateTime.parse(date))
+
+def euros(value: String): Money =
+  Money
+    .euros(value)
+    .getOrElse(sys.error(s"invalid money: $value"))

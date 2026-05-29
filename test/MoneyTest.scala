@@ -12,28 +12,25 @@ class MoneyTest extends munit.FunSuite:
     assertEquals(Money.euros("4x.5"), None)
 
   test("plus - adds without floating point drift"):
-    val sum = for
-      a <- Money.euros("0.10")
-      b <- Money.euros("0.20")
-    yield a + b
-    assertEquals(sum, Money.euros("0.30"))
+    assertEquals(euros("0.10") + euros("0.20"), euros("0.30"))
 
   test("minus - subtracts and allows negative results"):
-    val diff = for
-      a <- Money.euros("0.20")
-      b <- Money.euros("0.30")
-    yield a - b
-    assertEquals(diff, Money.euros("-0.10"))
+    assertEquals(euros("0.20") - euros("0.30"), euros("-0.10"))
 
   test("times - multiplies by an integer count"):
-    assertEquals(Money.euros("1.50").map(_ * 3), Money.euros("4.50"))
+    assertEquals(euros("1.50") * 3, euros("4.50"))
 
   test("dividedBy - rounds up to whole cents"):
-    assertEquals(Money.euros("100.00").map(_ / 7), Money.euros("14.29"))
+    assertEquals(euros("100.00") / 7, euros("14.29"))
 
   test("dividedBy - exact division stays exact"):
-    assertEquals(Money.euros("10.00").map(_ / 2), Money.euros("5.00"))
+    assertEquals(euros("10.00") / 2, euros("5.00"))
 
   test("dividedBy - throws on division by zero"):
-    val money = Money.euros("10.00").get
-    intercept[ArithmeticException](money / 0)
+    intercept[ArithmeticException](euros("10.00") / 0)
+
+  test("comparison - orders amounts"):
+    assertEquals(euros("10.01") >= euros("10.00"), true)
+    assertEquals(euros("10.00") >= euros("10.00"), true)
+    assertEquals(euros("9.99") >= euros("10.00"), false)
+    assertEquals(euros("9.99") < euros("10.00"), true)
