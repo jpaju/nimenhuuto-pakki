@@ -12,12 +12,16 @@ scala-cli test .                # run all tests
 scala-cli test . -- "*MyTest*"  # run single test
 ```
 
+## Docs
+
+Feature docs live together under `docs/features/<feature>/`, e.g.
+`product-requirements.md` and `technical-design.md` (engineering approach + progress).
+
 ## Code style
 
 - Scala 3 with scala-cli directives (`//> using`)
 - Format with scalafmt (max 120 cols, align.preset=most, Scala 3 braceless syntax)
 - Prefer immutable vals, case classes for data
-- Use `def` for top-level functions (no object wrappers needed in scala-cli)
 - Explicit return types on public functions
 - Group imports: stdlib, then deps, then local
 - Error handling: fail fast with `System.exit(1)` for CLI errors
