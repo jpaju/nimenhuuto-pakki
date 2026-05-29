@@ -2,3 +2,4 @@
 //> using dep "net.ruippeixotog::scala-scraper:3.2.0"
 //> using dep "com.monovore::decline::2.6.2"
 //> using test.dep "org.scalameta::munit:1.3.1"
+//> using test.dep "org.scalameta::munit-scalacheck:1.3.0"
