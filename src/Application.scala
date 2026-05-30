@@ -17,3 +17,11 @@ class Application(service: NimenhuutoService):
   def showRoster(): Unit =
     val players = service.fetchPlayers()
     ConsoleRender.roster(players)
+
+  def distributeBill(filter: EventFilter, totalBill: Money): Unit =
+    val attendances = service.fetchEventAttendances(filter)
+    val counts      = AttendanceCounts.perPlayer(attendances)
+
+    CostDistribution.perAttendance(totalBill, counts) match
+      case Some(distribution) => println(distribution)
+      case None               => println("No attendances found")

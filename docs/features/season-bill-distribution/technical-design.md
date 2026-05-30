@@ -54,5 +54,5 @@ Design above is stable. This section tracks implementation status.
 - [x] Unit and property-based tests for the core domain
 - [x] Derive per-player attendance counts from fetched events
 - [x] Command to distribute a bill, taking the bill as input
-- [ ] Application wiring of the distribution
+- [x] Application wiring of the distribution
 - [ ] Rendering of the distribution
