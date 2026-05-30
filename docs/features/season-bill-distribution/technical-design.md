@@ -25,6 +25,31 @@ Rounding the unit cost up means the collected total is always at least the bill:
 
 The integration layer parses the user's bill into a money value at the boundary and derives per-player attendance counts from fetched events. It hands both to cost distribution, which returns the distribution. The integration layer then renders the distribution, relying on money for formatting. The distribution returns "no result" when there are no attendances, so the boundary between "valid distribution" and "nothing to distribute" is explicit rather than a silent empty value.
 
+## Rendered output
+
+The render is self-justifying: a reader should be able to verify any share without further explanation. It has two parts: a summary block (bill, cost per attendance, collected total, event range) and a per-player table (player, attendances, share) sorted by attendances descending.
+
+```
+--------------------------------------------------
+First event: 07.01.2025
+Last event: 18.12.2025
+Total events: 24
+--------------------------------------------------
+Bill: 450.00 €
+Cost per attendance: 14.29 €
+Collected: 450.03 €
+--------------------------------------------------
+╭──────────┬─────────────┬──────────╮
+│ Player   │ Attendances │ Share    │
+├──────────┼─────────────┼──────────┤
+│ Alice    │ 3           │ 42.87 €  │
+│ Bob      │ 2           │ 28.58 €  │
+│ Jane     │ 2           │ 28.58 €  │
+╰──────────┴─────────────┴──────────╯
+```
+
+The attendances column makes the share calculation visible (`attendances * cost per attendance = share`). The collected total surfaces the (intentional) over-collection from rounding the unit cost up, instead of hiding it. The event range tells the reader which period the bill covers.
+
 ## Gotchas
 
 - **Use an exact decimal type for money, never floating point.** Cent amounts must be exact; floats accumulate representation errors. This is non-negotiable for anything handling money.
@@ -55,4 +80,4 @@ Design above is stable. This section tracks implementation status.
 - [x] Derive per-player attendance counts from fetched events
 - [x] Command to distribute a bill, taking the bill as input
 - [x] Application wiring of the distribution
-- [ ] Rendering of the distribution
+- [x] Rendering of the distribution
