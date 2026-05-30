@@ -20,13 +20,10 @@ class Application(service: NimenhuutoService):
 
   def distributeBill(filter: EventFilter, bill: Bill): Unit =
     val attendances = service.fetchEventAttendances(filter)
-    val counts      = AttendanceCounts.perPlayer(attendances)
 
     val rendered = for
-      stats           <- Stats.calculateAttendance(attendances)
-      total            = bill.total(stats.eventRange.totalEvents)
-      distribution    <- CostDistribution.perAttendance(total, counts)
-      billDistribution = BillDistribution.from(bill, stats, distribution)
+      stats            <- Stats.calculateAttendance(attendances)
+      billDistribution <- Bill.distribute(bill, stats)
     yield ConsoleRender.distribution(billDistribution)
 
     if rendered.isEmpty then println("No attendances found")
