@@ -16,13 +16,14 @@ The person responsible for collecting money from the team (the organizer), who a
 
 ## What success looks like
 
-- The organizer enters the season's bill once.
+- The organizer enters the season's bill once, either as a total or as a fixed per-event bill (the tool derives the total from the per-event bill and the event count).
 - The tool produces each player's share.
 - A player with more attendances pays proportionally more than one with fewer.
+- The output shows both the per-event bill and the total, regardless of which one was supplied, so the breakdown reads the same way.
 - The distribution is clear enough that the organizer can forward it to the team without further explanation or hand calculation.
 
 ## Out of scope
 
 - Collecting or transferring money (this only computes the distribution).
 - Multiple currencies.
-- Per-event or variable pricing; the input is one bill for the season.
+- Variable per-event pricing (each event having a different cost). The per-event bill is a single fixed amount that applies to every event.

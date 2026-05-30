@@ -18,14 +18,15 @@ class Application(service: NimenhuutoService):
     val players = service.fetchPlayers()
     ConsoleRender.roster(players)
 
-  def distributeBill(filter: EventFilter, totalBill: Money): Unit =
+  def distributeBill(filter: EventFilter, bill: Bill): Unit =
     val attendances = service.fetchEventAttendances(filter)
     val counts      = AttendanceCounts.perPlayer(attendances)
 
     val rendered = for
       stats           <- Stats.calculateAttendance(attendances)
-      distribution    <- CostDistribution.perAttendance(totalBill, counts)
-      billDistribution = BillDistribution.from(totalBill, stats, distribution)
+      total            = bill.total(stats.eventRange.totalEvents)
+      distribution    <- CostDistribution.perAttendance(total, counts)
+      billDistribution = BillDistribution.from(bill, stats, distribution)
     yield ConsoleRender.distribution(billDistribution)
 
     if rendered.isEmpty then println("No attendances found")

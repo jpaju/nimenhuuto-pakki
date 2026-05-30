@@ -37,6 +37,7 @@ object ConsoleRender:
 
   def distribution(billDistribution: BillDistribution): Unit =
     printEventRange(billDistribution.eventRange)
+    println(s"Per-event bill: ${billDistribution.perEventBill.render}")
     println(s"Bill: ${billDistribution.bill.render}")
     println(s"Cost per attendance: ${billDistribution.unitCost.render}")
     println(s"Collected: ${billDistribution.collected.render}")

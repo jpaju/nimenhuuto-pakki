@@ -13,6 +13,13 @@ share(player) = unitCost * attendances(player)
 
 Rounding the unit cost up means the collected total is always at least the bill: we never under-collect. Over-collection is bounded by less than one cent per attendance, which is acceptable for a hobby team bill.
 
+The user supplies the bill in one of two ways:
+
+- **Total bill**: a single amount for the whole season.
+- **Per-event bill**: a fixed amount per event. The total is derived as `perEventBill * totalEvents`.
+
+Exactly one of the two must be supplied. The derivation runs at the boundary; everything downstream operates on the resulting total. The rendered output always shows both values regardless of which was supplied.
+
 ## Building blocks and responsibilities
 
 **Money** — the central type for the whole feature. An exact monetary amount, represented to the cent. It owns all arithmetic (add, subtract, multiply by a count, divide) and comparison, and is the only place that knows how to render an amount for display. Nothing outside it deals in raw numeric types.
@@ -35,6 +42,7 @@ First event: 07.01.2025
 Last event: 18.12.2025
 Total events: 24
 --------------------------------------------------
+Per-event bill: 18.75 €
 Bill: 450.00 €
 Cost per attendance: 14.29 €
 Collected: 450.03 €

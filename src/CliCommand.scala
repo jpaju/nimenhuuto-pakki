@@ -9,7 +9,7 @@ enum CliCommand:
   case CountAttendance(filter: EventFilter)
   case EventHistory(filter: EventFilter)
   case ShowRoster
-  case DistributeBill(filter: EventFilter, totalBill: Money)
+  case DistributeBill(filter: EventFilter, bill: Bill)
 
 object CliCommand:
   // ====================================== Argument parsers ======================================
@@ -53,12 +53,18 @@ object CliCommand:
     Opts.subcommand("show-roster", "Show team roster with contact info"):
       Opts(CliCommand.ShowRoster)
 
+  private val totalBillOption: Opts[Bill] =
+    Opts.option[Money]("total-bill", "Total bill to distribute").map(Bill.Total(_))
+
+  private val perEventBillOption: Opts[Bill] =
+    Opts.option[Money]("per-event-bill", "Fixed bill per event; total is derived").map(Bill.PerEvent(_))
+
+  private val billOption: Opts[Bill] =
+    totalBillOption.orElse(perEventBillOption)
+
   private val distributeBill: Opts[CliCommand] =
-    Opts.subcommand("distribute-bill", "Distribute a total bill across players by attendance"):
-      (
-        eventFilterOption,
-        Opts.option[Money]("total-bill", "Total bill to distribute")
-      ).mapN(CliCommand.DistributeBill(_, _))
+    Opts.subcommand("distribute-bill", "Distribute a bill across players by attendance"):
+      (eventFilterOption, billOption).mapN(CliCommand.DistributeBill(_, _))
 
 // ========================================== Entry point ==========================================
   val main: Command[CliCommand] =
