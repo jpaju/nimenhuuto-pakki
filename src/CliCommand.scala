@@ -1,5 +1,6 @@
 import com.monovore.decline.*
 import com.monovore.decline.time.*
+import cats.data.*
 import cats.syntax.all.*
 import java.time.*
 
@@ -8,17 +9,34 @@ enum CliCommand:
   case CountAttendance(filter: EventFilter)
   case EventHistory(filter: EventFilter)
   case ShowRoster
+  case DistributeBill(filter: EventFilter, totalBill: Money)
 
 object CliCommand:
-  private val eventFilterOption: Opts[EventFilter] =
-    val count     = Opts.option[Int]("count", "Number of events").map(EventFilter.ByCount(_))
-    val since     = Opts.option[LocalDate]("since", "Events newer than date").map(EventFilter.NewerThan(_))
-    val dateRange = (
-      Opts.option[LocalDate]("since", "Start of date range"),
-      Opts.option[LocalDate]("until", "End of date range")
-    ).mapN(EventFilter.DateRange(_, _))
-    count.orElse(dateRange).orElse(since)
+  // ====================================== Argument parsers ======================================
+  private given Argument[Money] = Argument.from("amount"): str =>
+    Validated.fromOption(
+      Money.euros(str),
+      ifNone = NonEmptyList.of(s"Invalid amount: '$str'. Expected an amount in euros, e.g. 45.50 or 45,50.")
+    )
 
+  // ======================================= Shared options =======================================
+  private val byCount: Opts[EventFilter] =
+    Opts.option[Int]("count", "Number of events").map(EventFilter.ByCount(_))
+
+  private val dateRange: Opts[EventFilter] = (
+    Opts.option[LocalDate]("since", "Start of date range"),
+    Opts.option[LocalDate]("until", "End of date range")
+  ).mapN(EventFilter.DateRange(_, _))
+
+  private val newerThan: Opts[EventFilter] =
+    Opts.option[LocalDate]("since", "Events newer than date").map(EventFilter.NewerThan(_))
+
+  private val eventFilterOption: Opts[EventFilter] =
+    byCount // dateRange must be before newerThan because both consume --since.
+      .orElse(dateRange)
+      .orElse(newerThan)
+
+  // ========================================= Subcommands =========================================
   private val listEvents: Opts[CliCommand] =
     Opts.subcommand("list-events", "List latest events"):
       eventFilterOption.map(CliCommand.ListEvents(_))
@@ -35,9 +53,18 @@ object CliCommand:
     Opts.subcommand("show-roster", "Show team roster with contact info"):
       Opts(CliCommand.ShowRoster)
 
+  private val distributeBill: Opts[CliCommand] =
+    Opts.subcommand("distribute-bill", "Distribute a total bill across players by attendance"):
+      (
+        eventFilterOption,
+        Opts.option[Money]("total-bill", "Total bill to distribute")
+      ).mapN(CliCommand.DistributeBill(_, _))
+
+// ========================================== Entry point ==========================================
   val main: Command[CliCommand] =
     Command(name = "nh-toolkit", header = "Nimenhuuto toolkit"):
       listEvents
         .orElse(countAttendance)
         .orElse(eventHistory)
         .orElse(showRoster)
+        .orElse(distributeBill)

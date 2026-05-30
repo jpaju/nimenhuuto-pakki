@@ -53,6 +53,6 @@ Design above is stable. This section tracks implementation status.
 - [x] Cost distribution strategy and distribution result type
 - [x] Unit and property-based tests for the core domain
 - [x] Derive per-player attendance counts from fetched events
-- [ ] Command to distribute a bill, taking the bill as input
+- [x] Command to distribute a bill, taking the bill as input
 - [ ] Application wiring of the distribution
 - [ ] Rendering of the distribution

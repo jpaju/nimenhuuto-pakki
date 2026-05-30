@@ -23,10 +23,12 @@ private def runCommand(cmd: CliCommand) =
   val app     = Application(service)
 
   cmd match
-    case CliCommand.ListEvents(filter)      => app.listEvents(filter)
-    case CliCommand.CountAttendance(filter) => app.countAttendance(filter)
-    case CliCommand.EventHistory(filter)    => app.eventHistory(filter)
-    case CliCommand.ShowRoster              => app.showRoster()
+    case CliCommand.ListEvents(filter)                => app.listEvents(filter)
+    case CliCommand.CountAttendance(filter)           => app.countAttendance(filter)
+    case CliCommand.EventHistory(filter)              => app.eventHistory(filter)
+    case CliCommand.ShowRoster                        => app.showRoster()
+    case CliCommand.DistributeBill(filter, totalBill) =>
+      println(s"distribute-bill: filter=$filter, totalBill=${totalBill.render}")
 
 private def requireEnvVar(name: String): String =
   sys.env.get(name).getOrElse {
