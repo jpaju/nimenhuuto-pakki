@@ -2,11 +2,23 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 object ConsoleRender:
+  // ====================================== Public renderers ======================================
   def event(e: Event): Unit =
     println(s"${formatDate(e.date)} - ${e.title} (${e.url})")
 
   def events(events: List[Event]): Unit =
     events.foreach(event)
+
+  def attendanceStats(stats: AttendanceStats): Unit =
+    val (maxEvent, maxCount) = stats.mostAttended
+
+    printSeparator()
+    println(s"Total attendances: ${stats.totalAttendances}")
+    println(f"Average attendance: ${stats.averageAttendance}%.1f")
+    println(s"Max attendance: ${formatDate(maxEvent.date)} ($maxCount players)")
+    printEventRange(stats.eventRange)
+    println()
+    stats.playerStats.foreach(a => println(s"${a.name}: ${a.timesAttended}"))
 
   def eventAttendance(attendance: EventAttendance): Unit =
     val event = attendance.event
@@ -20,28 +32,8 @@ object ConsoleRender:
   def eventAttendances(attendances: List[EventAttendance]): Unit =
     attendances.foreach(eventAttendance)
 
-  def attendanceStats(stats: AttendanceStats): Unit =
-    val (maxEvent, maxCount) = stats.mostAttended
-
-    printSeparator()
-    println(s"Total attendances: ${stats.totalAttendances}")
-    println(f"Average attendance: ${stats.averageAttendance}%.1f")
-    println(s"Max attendance: ${formatDate(maxEvent.date)} ($maxCount players)")
-    printEventRange(stats.eventRange)
-    println()
-    stats.playerStats.foreach(a => println(s"${a.name}: ${a.timesAttended}"))
-
   def roster(players: List[Player]): Unit =
-    if players.nonEmpty then
-      val header = List("Name", "Email", "Phone")
-      val rows   = players.map: p =>
-        List(
-          p.name.toString,
-          p.email.getOrElse("-"),
-          p.phone.getOrElse("-")
-        )
-
-      println(Tabulator.format(header :: rows))
+    if players.nonEmpty then printPlayersTable(players)
 
   def distribution(billDistribution: BillDistribution): Unit =
     printEventRange(billDistribution.eventRange)
@@ -49,13 +41,9 @@ object ConsoleRender:
     println(s"Cost per attendance: ${billDistribution.unitCost.render}")
     println(s"Collected: ${billDistribution.collected.render}")
     printSeparator()
+    printPlayerSharesTable(billDistribution.playerShares)
 
-    val header = List("Player", "Attendances", "Share")
-    val rows   = billDistribution.playerShares.map: ps =>
-      List(ps.name.toString, ps.attendances.toString, ps.share.render)
-
-    println(Tabulator.format(header :: rows))
-
+  // ========================================== Helpers ===========================================
   private val dateFormat = DateTimeFormatter.ofPattern("dd.MM.yyyy")
 
   def formatDate(date: LocalDateTime): String =
@@ -70,6 +58,20 @@ object ConsoleRender:
     println(s"Last event: ${formatDate(eventRange.lastEvent.date)}")
     println(s"Total events: ${eventRange.totalEvents}")
     printSeparator()
+
+  private def printPlayersTable(players: List[Player]): Unit =
+    val header = List("Name", "Email", "Phone")
+    val rows   = players.map: p =>
+      List(p.name.toString, p.email.getOrElse("-"), p.phone.getOrElse("-"))
+
+    println(Tabulator.format(header :: rows))
+
+  private def printPlayerSharesTable(playerShares: List[PlayerShare]): Unit =
+    val header = List("Player", "Attendances", "Share")
+    val rows   = playerShares.map: ps =>
+      List(ps.name.toString, ps.attendances.toString, ps.share.render)
+
+    println(Tabulator.format(header :: rows))
 
 // Shamelessly copied from https://stackoverflow.com/questions/7539831/scala-draw-table-to-console
 private object Tabulator:
