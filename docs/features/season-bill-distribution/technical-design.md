@@ -52,7 +52,7 @@ Design above is stable. This section tracks implementation status.
 - [x] Money domain type (parse, arithmetic, comparison, render)
 - [x] Cost distribution strategy and distribution result type
 - [x] Unit and property-based tests for the core domain
-- [ ] Derive per-player attendance counts from fetched events
+- [x] Derive per-player attendance counts from fetched events
 - [ ] Command to distribute a bill, taking the bill as input
 - [ ] Application wiring of the distribution
 - [ ] Rendering of the distribution
