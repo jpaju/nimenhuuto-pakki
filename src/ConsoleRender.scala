@@ -27,7 +27,7 @@ object ConsoleRender:
     println(s"Total attendances: ${stats.totalAttendances}")
     println(f"Average attendance: ${stats.averageAttendance}%.1f")
     println(s"Max attendance: ${formatDate(maxEvent.date)} ($maxCount players)")
-    printEventRange(stats)
+    printEventRange(stats.eventRange)
     println()
     stats.playerStats.foreach(a => println(s"${a.name}: ${a.timesAttended}"))
 
@@ -43,23 +43,16 @@ object ConsoleRender:
 
       println(Tabulator.format(header :: rows))
 
-  def distribution(bill: Money, stats: AttendanceStats, distribution: Distribution[ShortName]): Unit =
-    val collected = distribution.shares.values.reduce(_ + _)
-
-    printEventRange(stats)
-    println(s"Bill: ${bill.render}")
-    println(s"Cost per attendance: ${distribution.unitCost.render}")
-    println(s"Collected: ${collected.render}")
+  def distribution(billDistribution: BillDistribution): Unit =
+    printEventRange(billDistribution.eventRange)
+    println(s"Bill: ${billDistribution.bill.render}")
+    println(s"Cost per attendance: ${billDistribution.unitCost.render}")
+    println(s"Collected: ${billDistribution.collected.render}")
     printSeparator()
 
     val header = List("Player", "Attendances", "Share")
-    val rows   = stats.playerStats
-      .map: playerStats =>
-        List(
-          playerStats.name.toString,
-          playerStats.timesAttended.toString,
-          distribution.shares(playerStats.name).render
-        )
+    val rows   = billDistribution.playerShares.map: ps =>
+      List(ps.name.toString, ps.attendances.toString, ps.share.render)
 
     println(Tabulator.format(header :: rows))
 
@@ -71,11 +64,11 @@ object ConsoleRender:
   private def printSeparator() =
     println("-" * 50)
 
-  private def printEventRange(stats: AttendanceStats): Unit =
+  private def printEventRange(eventRange: EventRange): Unit =
     printSeparator()
-    println(s"First event: ${formatDate(stats.firstEvent.date)}")
-    println(s"Last event: ${formatDate(stats.lastEvent.date)}")
-    println(s"Total events: ${stats.totalEvents}")
+    println(s"First event: ${formatDate(eventRange.firstEvent.date)}")
+    println(s"Last event: ${formatDate(eventRange.lastEvent.date)}")
+    println(s"Total events: ${eventRange.totalEvents}")
     printSeparator()
 
 // Shamelessly copied from https://stackoverflow.com/questions/7539831/scala-draw-table-to-console

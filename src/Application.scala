@@ -23,8 +23,9 @@ class Application(service: NimenhuutoService):
     val counts      = AttendanceCounts.perPlayer(attendances)
 
     val rendered = for
-      stats        <- Stats.calculateAttendance(attendances)
-      distribution <- CostDistribution.perAttendance(totalBill, counts)
-    yield ConsoleRender.distribution(totalBill, stats, distribution)
+      stats           <- Stats.calculateAttendance(attendances)
+      distribution    <- CostDistribution.perAttendance(totalBill, counts)
+      billDistribution = BillDistribution.from(totalBill, stats, distribution)
+    yield ConsoleRender.distribution(billDistribution)
 
     if rendered.isEmpty then println("No attendances found")

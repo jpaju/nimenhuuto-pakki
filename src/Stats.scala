@@ -9,16 +9,14 @@ object Stats:
         val mostAttended      = (mostAttendedEvent.event, mostAttendedEvent.responses.in.size)
         val averageAttendance = inPlayers.size.toDouble / totalEvents
 
-        val (firstEvent, lastEvent) = findFirstAndLastEvent(attendances)
-        val playerStats             = countPlayerStats(inPlayers)
+        val eventRange  = buildEventRange(attendances)
+        val playerStats = countPlayerStats(inPlayers)
 
         AttendanceStats(
-          totalEvents = totalEvents,
           totalAttendances = totalAttendances,
           mostAttended = mostAttended,
           averageAttendance = averageAttendance,
-          firstEvent = firstEvent,
-          lastEvent = lastEvent,
+          eventRange = eventRange,
           playerStats = playerStats
         )
       }
@@ -31,8 +29,10 @@ object Stats:
       .toList
       .sortBy(_.timesAttended)(Ordering.Int.reverse)
 
-  private def findFirstAndLastEvent(attendances: List[EventAttendance]): (Event, Event) =
-    val firstEvent = attendances.map(_.event).minBy(_.date)
-    val lastEvent  = attendances.map(_.event).maxBy(_.date)
-
-    firstEvent -> lastEvent
+  private def buildEventRange(attendances: List[EventAttendance]): EventRange =
+    val events = attendances.map(_.event)
+    EventRange(
+      firstEvent = events.minBy(_.date),
+      lastEvent = events.maxBy(_.date),
+      totalEvents = events.size
+    )

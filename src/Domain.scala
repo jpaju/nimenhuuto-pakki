@@ -34,12 +34,12 @@ case class EventAttendance(
 
 case class PlayerStats(name: ShortName, timesAttended: Int)
 
+case class EventRange(firstEvent: Event, lastEvent: Event, totalEvents: Int)
+
 case class AttendanceStats(
-    totalEvents: Int,
     totalAttendances: Int,
     mostAttended: (Event, Int),
     averageAttendance: Double,
-    firstEvent: Event,
-    lastEvent: Event,
+    eventRange: EventRange,
     playerStats: List[PlayerStats]
 )

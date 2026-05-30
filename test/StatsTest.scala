@@ -11,4 +11,4 @@ class StatsTest extends munit.FunSuite:
 
     val stats = Stats.calculateAttendance(attendances).get
 
-    assertEquals(stats.totalEvents, 3)
+    assertEquals(stats.eventRange.totalEvents, 3)
