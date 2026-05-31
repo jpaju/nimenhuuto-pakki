@@ -10,6 +10,9 @@ def attendanceResponses(
 def event(id: String, date: String = "2025-01-01T20:00"): Event =
   Event(id, s"/$id", "Harkka", LocalDateTime.parse(date))
 
+def playerStats(name: String, timesAttended: Int): PlayerStats =
+  PlayerStats(ShortName(name), timesAttended)
+
 def euros(value: String): Money =
   Money
     .euros(value)
