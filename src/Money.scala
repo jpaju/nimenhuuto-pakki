@@ -12,7 +12,7 @@ case class Money private (private val amount: BigDecimal) extends Ordered[Money]
 
   def compare(other: Money): Int = amount.compare(other.amount)
 
-  def render: String = s"$amount €"
+  def render: String = s"${amount.toString.replace('.', ',')} €"
 
 object Money:
   private val scale = 2

@@ -1,12 +1,12 @@
 class MoneyTest extends munit.FunSuite:
   test("euros - renders normalized to two decimals with currency"):
-    assertEquals(Money.euros("1.5").map(_.render), Some("1.50 €"))
+    assertEquals(Money.euros("1.5").map(_.render), Some("1,50 €"))
 
   test("euros - rounds half up"):
-    assertEquals(Money.euros("1.005").map(_.render), Some("1.01 €"))
+    assertEquals(Money.euros("1.005").map(_.render), Some("1,01 €"))
 
   test("euros - accepts comma as decimal separator"):
-    assertEquals(Money.euros("1,5").map(_.render), Some("1.50 €"))
+    assertEquals(Money.euros("1,5").map(_.render), Some("1,50 €"))
 
   test("euros - returns None for invalid input"):
     assertEquals(Money.euros("4x.5"), None)
