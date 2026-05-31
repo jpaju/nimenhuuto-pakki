@@ -34,6 +34,7 @@ All required tools are available in nix development shell, activate with `nix de
 - [x] Calculate attendance for every player across multiple events
 - [x] Add parsing tests with HTML files downloaded from browser
 - [x] Show roster: list all players with their emails etc.
+- [ ] Season bill invoicing: [product requirements](docs/features/season-bill-invoicing/product-requirements.md)
 - [ ] Check that no one has canceled their registration after the event
 - [ ] Error handling
   - When login is not successful
