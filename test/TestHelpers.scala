@@ -13,6 +13,18 @@ def event(id: String, date: String = "2025-01-01T20:00"): Event =
 def playerStats(name: String, timesAttended: Int): PlayerStats =
   PlayerStats(ShortName(name), timesAttended)
 
+def attendanceStats(
+    playerStats: List[PlayerStats] = Nil,
+    eventRange: EventRange = EventRange(event("1"), event("2"), totalEvents = 1)
+): AttendanceStats =
+  AttendanceStats(
+    totalAttendances = 0,
+    mostAttended = (eventRange.firstEvent, 0),
+    averageAttendance = 0.0,
+    eventRange = eventRange,
+    playerStats = playerStats
+  )
+
 def euros(value: String): Money =
   Money
     .euros(value)
